@@ -12,6 +12,9 @@ public class Main
     public static boolean debug = false;
     public static boolean verbose = false;
 
+    public static Thread updt;
+    public static Thread cli;
+
     public static void main(String[] args)
     {
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
@@ -31,14 +34,14 @@ public class Main
         Outputs.printDebug("Stored messages loaded");
 
         Outputs.printDebug("Creating new Thread for Updater");
-        Thread updt = new Thread(new Updater());
+        updt = new Thread(new Updater());
         Outputs.printDebug("Updater Thread created");
         Outputs.printDebug("Starting Updater Thread");
         updt.start();
         Outputs.printDebug("Updater started");
 
         Outputs.printDebug("Creating new Thread for CLI...");
-        Thread cli = new Thread(new CLI());
+        cli = new Thread(new CLI());
         Outputs.printDebug("CLI Thread created");
         Outputs.printDebug("Starting CLI Thread...");
         cli.start();

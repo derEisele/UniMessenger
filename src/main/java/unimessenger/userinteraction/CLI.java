@@ -1,5 +1,6 @@
 package unimessenger.userinteraction;
 
+import unimessenger.Main;
 import unimessenger.userinteraction.menu.MenuMain;
 import unimessenger.userinteraction.menu.MenuWireChat;
 import unimessenger.userinteraction.menu.MenuWireLogin;
@@ -43,6 +44,10 @@ public class CLI implements Runnable
                     break;
             }
         }
+        Outputs.printDebug("Stopping update thread...");
+        Main.updt.stop();
+        Outputs.printDebug("Update thread stopped");
+
         Outputs.printInfo("Exiting program...");
     }
 

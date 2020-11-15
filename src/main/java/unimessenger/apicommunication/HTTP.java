@@ -37,11 +37,12 @@ public class HTTP
         try
         {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            //TODO: Check the difference to sendAsync
         } catch(Exception ignored)
         {
         }
         assert response != null;
-        System.out.println(response.body());
+        System.out.println(response);
     }
 
     public enum REQUESTTYPE
