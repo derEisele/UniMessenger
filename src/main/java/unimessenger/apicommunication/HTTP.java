@@ -1,20 +1,16 @@
 package unimessenger.apicommunication;
 
-import java.net.URI;
+import unimessenger.util.Variables;
+
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class HTTP
 {
-    private static final String API_URL_EXAMPLE = "https://jsonplaceholder.typicode.com/todos/1";
-
-    private static final String URL_WIRE = "https://prod-nginz-https.wire.com";
-    private static final String URL_WIRE_LOGIN = "https://prod-nginz-https.wire.com/login?persist=false";
-
     static HttpClient client = HttpClient.newHttpClient();
 
-    public static void sendRequest(String url, REQUESTTYPE type, String body, String... headers)
+    public static HttpResponse<String> sendRequest(String url, Variables.REQUESTTYPE type, String body, String... headers)
     {
         HttpRequest request = null;
         HttpResponse<String> response = null;
@@ -22,33 +18,28 @@ public class HTTP
         switch(type)
         {
             case GET:
-                request = HttpRequest.newBuilder().GET().header("accept", "application/json").uri(URI.create(url)).build();
+                request = RequestBuilder.getGETRequest(url, headers);
                 break;
             case PUT:
-                //TODO: Add PUT request
+                request = RequestBuilder.getPUTRequest(url, body, headers);
                 break;
             case POST:
-                //TODO: Add POST request
+                request = RequestBuilder.getPOSTRequest(url, body, headers);
                 break;
             default:
                 break;
         }
 
-        try
+        if(request != null)
         {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            //TODO: Check the difference to sendAsync
-        } catch(Exception ignored)
-        {
+            try
+            {
+                response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            } catch(Exception ignored)
+            {
+            }
         }
-        assert response != null;
-        System.out.println(response);
-    }
 
-    public enum REQUESTTYPE
-    {
-        GET,
-        POST,
-        PUT
+        return response;
     }
 }

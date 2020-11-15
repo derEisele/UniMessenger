@@ -16,7 +16,7 @@ public class MenuMain
             case 1:
                 //TODO: Validate Wire account information and either log user in or show login menu
                 CLI.currentMenu = CLI.MENU.WireLogin;
-                CLI.currentMenu = CLI.MENU.WireOverview;
+//                CLI.currentMenu = CLI.MENU.WireOverview;
                 break;
             case 2:
                 CLI.currentMenu = CLI.MENU.EXIT;

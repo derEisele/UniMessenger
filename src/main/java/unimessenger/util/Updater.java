@@ -1,12 +1,10 @@
 package unimessenger.util;
 
-import unimessenger.apicommunication.RequestBuilder;
-
 import java.util.ArrayList;
 
 public class Updater implements Runnable
 {
-    public static ArrayList<RequestBuilder.SERVICE> runningServices = new ArrayList<>();
+    public static ArrayList<Variables.SERVICE> runningServices = new ArrayList<>();
 
     @Override
     public void run()
@@ -15,20 +13,20 @@ public class Updater implements Runnable
 
         while(!runningServices.isEmpty())
         {
-            for(RequestBuilder.SERVICE service : runningServices)
+            for(Variables.SERVICE service : runningServices)
             {
                 sendRequestToServer(service);
             }
         }
     }
 
-    private void sendRequestToServer(RequestBuilder.SERVICE service)
+    private void sendRequestToServer(Variables.SERVICE service)
     {
         //TODO: Send HTTPRequest to server of specified service and ask for new messages
     }
 
     private static void initializeServices()
     {
-        runningServices.add(RequestBuilder.SERVICE.WIRE);
+        runningServices.add(Variables.SERVICE.WIRE);
     }
 }

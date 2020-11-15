@@ -3,24 +3,19 @@ package unimessenger;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.Updater;
+import unimessenger.util.Variables;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main
 {
-    public static boolean debug = false;
-    public static boolean verbose = false;
-
-    public static Thread updt;
-    public static Thread cli;
-
     public static void main(String[] args)
     {
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 
-        if(arguments.contains("-d")) debug = true;
-        if(arguments.contains("-v")) verbose = true;
+        if(arguments.contains("-d")) Variables.debug = true;
+        if(arguments.contains("-v")) Variables.verbose = true;
 
         Outputs.printInfo("Uni-Messenger starting...");
         Outputs.printDebug("Loading login files...");
