@@ -9,8 +9,8 @@ public class HTTP
 {
     private static final String API_URL_EXAMPLE = "https://jsonplaceholder.typicode.com/todos/1";
 
-    private static final String URL_WIRE = "https://staging-nginz-https.zinfra.io";
-    private static final String URL_WIRE_LOGIN = "https://staging-nginz-https.zinfra.io/login?persist=true";
+    private static final String URL_WIRE = "https://prod-nginz-https.wire.com";
+    private static final String URL_WIRE_LOGIN = "https://prod-nginz-https.wire.com/login?persist=false";
 
     static HttpClient client = HttpClient.newHttpClient();
 
