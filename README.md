@@ -25,5 +25,8 @@ Planned messengers are Wire, Telegram and WhatsApp, with the priority on Wire.
 - [HTTPURLConnection YT Tutorial](https://www.youtube.com/watch?v=qzRKa8I36Ww&ab_channel=CodingMaster-ProgrammingTutorials)
 - [HTTPClient YT Tutorial](https://www.youtube.com/watch?v=5MmlRZZxTqk&ab_channel=DanVega)
 
+#### JSON Handling
+- [JSONParser](https://www.geeksforgeeks.org/parse-json-java/)
+
 #### APIs
 - [Test API](https://jsonplaceholder.typicode.com/)
