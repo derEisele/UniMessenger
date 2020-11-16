@@ -79,7 +79,7 @@ public class MenuWireLogin
 
         return handleResponse(CLI.userHTTP.sendRequest(url, Variables.REQUESTTYPE.POST, body, headers));
     }
-    private static boolean handleResponse(HttpResponse<String> response)
+    public static boolean handleResponse(HttpResponse<String> response)
     {
         if(response == null || response.statusCode() != 200) return false;
 

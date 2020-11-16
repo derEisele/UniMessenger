@@ -26,6 +26,8 @@ public class Storage
             wireAccessCookie = accessCookie;
             JSONObject obj = new JSONObject();
             obj.put("accessCookie", accessCookie);
+            obj.put("bearerToken", wireBearerToken);
+            obj.put("bearerTime", wireBearerTokenExpiringTime);
 
             try
             {
@@ -71,6 +73,8 @@ public class Storage
         {
             JSONObject obj = (JSONObject) new JSONParser().parse(new FileReader(wireDataFile));
             wireAccessCookie = (String) obj.get("accessCookie");
+            wireBearerToken = (String) obj.get("bearerToken");
+            wireBearerTokenExpiringTime = (Timestamp) obj.get("bearerTime");
         } catch(Exception ignored)
         {
         }
