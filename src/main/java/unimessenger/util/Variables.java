@@ -8,11 +8,11 @@ public class Variables
     public static Thread cli;
     public static Thread updt;
 
-    public static final String URL_WIRE = "https://prod-nginz-https.wire.com";
-
     public enum SERVICE
     {
-        WIRE
+        NONE,
+        WIRE,
+        TELEGRAM
     }
 
     public enum REQUESTTYPE

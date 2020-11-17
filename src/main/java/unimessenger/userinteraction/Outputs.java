@@ -32,6 +32,7 @@ public class Outputs
 
         printDebug("Waiting for user-input...");
 
+        //TODO: Validate if input is an int
         return sc.nextInt();
     }
     public static String getStringAnswerFrom(String question)

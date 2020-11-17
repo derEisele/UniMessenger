@@ -1,58 +1,30 @@
-package unimessenger.userinteraction.menu;
+package unimessenger.abstraction.wire;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import unimessenger.abstraction.URL;
+import unimessenger.abstraction.interfaces.ILoginOut;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.Commands;
 import unimessenger.util.Parsers;
 import unimessenger.util.Storage;
 import unimessenger.util.Variables;
 
 import java.net.http.HttpResponse;
 
-public class MenuWireLogin
+public class WireLogin implements ILoginOut
 {
-    public static void showMenu()
-    {
-        System.out.println("1) Enter Login Information");
-        System.out.println("2) Show Main Menu");
-        System.out.println("3) Exit Program");
-        System.out.println("4) AutoLogin");
-
-        int userInput = Outputs.getIntAnswerFrom("Please enter the number of the option you would like to choose.");
-        switch(userInput)
-        {
-            case 1:
-                if(handleUserLogin()) CLI.currentMenu = CLI.MENU.WireOverview;
-                else System.out.println("Failed to log in");
-                break;
-            case 2:
-                CLI.currentMenu = CLI.MENU.MainMenu;
-                break;
-            case 3:
-                CLI.currentMenu = CLI.MENU.EXIT;
-                break;
-            case 4:
-                autoLogin();
-                CLI.currentMenu = CLI.MENU.WireOverview;
-                break;
-            default:
-                Outputs.cannotHandleUserInput();
-                break;
-        }
-    }
-
-    private static boolean handleUserLogin()
+    @Override
+    public boolean login()
     {
         //TODO: Add more login options (phone)
         String mail = Outputs.getStringAnswerFrom("Please enter your E-Mail");//TestAccount: pechtl97@gmail.com
         String pw = Outputs.getStringAnswerFrom("Please enter your password");//TestAccount: Passwort1!
         boolean persist = Outputs.getBoolAnswerFrom("Do you want to stay logged in?");
 
-        String url = Variables.URL_WIRE + Commands.LOGIN;
-        if(persist) url += Commands.PERSIST;
+        String url = URL.WIRE + URL.WIRE_LOGIN;
+        if(persist) url += URL.WIRE_PERSIST;
 
         JSONObject obj = new JSONObject();
         obj.put("email", mail);
@@ -63,22 +35,36 @@ public class MenuWireLogin
 
         return handleResponse(CLI.userHTTP.sendRequest(url, Variables.REQUESTTYPE.POST, body, headers));
     }
-    private static boolean autoLogin()
+
+    @Override
+    public boolean logout()
+    //Todo dont put this into the link but into the header because best practices see wire docs
     {
-        boolean persist = Outputs.getBoolAnswerFrom("Do you want to stay logged in?");
+        String url = URL.WIRE + URL.WIRE_LOGOUT + "?access_token=" + Storage.wireBearerToken;
+        String[] headers = new String[]{
+                "cookie", Storage.wireAccessCookie,
+                "content-type", "application/json",
+                "accept", "application/json"};
 
-        String url = Variables.URL_WIRE + Commands.LOGIN;
-        if(persist) url += Commands.PERSIST;
+        HttpResponse<String> response = CLI.userHTTP.sendRequest(url, Variables.REQUESTTYPE.POST, "", headers);
 
-        JSONObject obj = new JSONObject();
-        obj.put("email", "pechtl97@gmail.com");
-        obj.put("password", "Passwort1!");
-        String body = obj.toJSONString();
-
-        String[] headers = new String[] {"content-type", "application/json", "accept", "application/json"};
-
-        return handleResponse(CLI.userHTTP.sendRequest(url, Variables.REQUESTTYPE.POST, body, headers));
+        if(response == null)
+        {
+            Outputs.printError("Couldn't get a HTTP response");
+            return false;
+        } else if(response.statusCode() == 200)
+        {
+            Outputs.printDebug("Successfully logged out");
+            Storage.clearUserData(Variables.SERVICE.WIRE);
+            return true;
+        } else
+        {
+            Outputs.printDebug("Response code is not 200");
+            return false;
+        }
+        //TODO make it so the Data is not cleared if the user is not logged out and data is certainly cleared if user is logged out
     }
+
     public static boolean handleResponse(HttpResponse<String> response)
     {
         if(response == null || response.statusCode() != 200) return false;
