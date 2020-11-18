@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class WireConversation
 {
-    public ACCESS access;
+    public ArrayList<String> access;
     public String creatorID;
-    public ACCESS accessRole;
+    public String accessRole;
     public ArrayList<WirePerson> members;
     public String conversationName;
     public String team;
@@ -19,9 +19,9 @@ public class WireConversation
 
     public WireConversation()
     {
-        access = ACCESS.NULL;
+        access = new ArrayList<>();
         creatorID = null;
-        accessRole = ACCESS.NULL;
+        accessRole = null;
         members = new ArrayList<>();
         conversationName = null;
         team = null;
@@ -31,11 +31,5 @@ public class WireConversation
         last_event_time = null;
         message_timer = null;
         last_event = null;
-    }
-
-    public enum ACCESS
-    {
-        NULL,
-        PRIVATE
     }
 }

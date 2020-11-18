@@ -56,9 +56,10 @@ public class MenuLogin
 
     private static boolean connectUser()
     {
-        ILoginOut login = new APIAccess().getLoginInterface(CLI.currentService);
+        APIAccess access = new APIAccess();
+        ILoginOut login = access.getLoginInterface(CLI.currentService);
 
-        if(login.checkIfLoggedIn() && login.refresh()) return true;
+        if(login.checkIfLoggedIn() && access.getUtilInterface(CLI.currentService).refreshSession()) return true;
         if(login.login()) return true;
 
         System.out.println("Failed to log in");
@@ -92,20 +93,19 @@ public class MenuLogin
         try
         {
             obj = (JSONObject) new JSONParser().parse(response.body());
-            WireStorage.wireUserID = obj.get("user").toString();
-            WireStorage.wireBearerToken = obj.get("access_token").toString();
-            WireStorage.setWireBearerTime(Integer.parseInt(obj.get("expires_in").toString()));
+            WireStorage.userID = obj.get("user").toString();
+            WireStorage.setBearerToken(obj.get("access_token").toString(), Integer.parseInt(obj.get("expires_in").toString()));
 
             String raw = response.headers().map().get("set-cookie").get(0);
             String[] arr = raw.split("zuid=");
             if(arr.length > 1) arr = arr[1].split(";");
-            WireStorage.wireAccessCookie = "zuid=" + arr[0];
+            WireStorage.cookie = "zuid=" + arr[0];
 
             Outputs.printDebug("Token Type: " + obj.get("token_type"));
             Outputs.printDebug("Expires in: " + obj.get("expires_in"));
-            Outputs.printDebug("Access Token: " + WireStorage.wireBearerToken);
-            Outputs.printDebug("User: " + WireStorage.wireUserID);
-            Outputs.printDebug("Cookie: " + WireStorage.wireAccessCookie);
+            Outputs.printDebug("Access Token: " + WireStorage.getBearerToken());
+            Outputs.printDebug("User: " + WireStorage.userID);
+            Outputs.printDebug("Cookie: " + WireStorage.cookie);
         } catch(ParseException ignored)
         {
         }

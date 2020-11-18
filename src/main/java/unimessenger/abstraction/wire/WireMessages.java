@@ -10,11 +10,13 @@ import java.net.http.HttpResponse;
 
 public class WireMessages implements IMessages
 {
-    public static void PrintNotifications(){
+    @Deprecated
+    public static void PrintNotifications()
+    {
         HTTP msgSender = new HTTP();
         System.out.println("List of all conversations in Wire:");
         //TODO: Show a list of all Wire-conversations
-        String url = URL.WIRE + "/notifications/last" + "?access_token=" + WireStorage.wireBearerToken;
+        String url = URL.WIRE + URL.WIRE_LAST_NOTIFICATION + URL.WIRE_TOKEN + WireStorage.getBearerToken();
         String[] headers = new String[]{
                 "accept", "application/json",
                 "accept", "text/html"};

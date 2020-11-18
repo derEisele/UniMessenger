@@ -18,9 +18,9 @@ public class WireUtil implements IUtil
     @Override
     public boolean refreshSession()
     {
-        String url = URL.WIRE + URL.WIRE_ACCESS + "?access_token=" + WireStorage.wireBearerToken;
+        String url = URL.WIRE + URL.WIRE_ACCESS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
         String[] headers = new String[]{
-                "cookie", WireStorage.wireAccessCookie,
+                "cookie", WireStorage.cookie,
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
@@ -36,8 +36,7 @@ public class WireUtil implements IUtil
             {
                 assert false;
                 obj = (JSONObject) new JSONParser().parse(response.body());
-                WireStorage.wireBearerToken = obj.get("access_token").toString();
-                WireStorage.setWireBearerTime(Integer.parseInt(obj.get("expires_in").toString()));
+                WireStorage.setBearerToken(obj.get("access_token").toString(), Integer.parseInt(obj.get("expires_in").toString()));
                 Outputs.printDebug("Successfully refreshed token");
                 return true;
             } catch(ParseException ignored)
@@ -47,8 +46,8 @@ public class WireUtil implements IUtil
         } else
         {
             Outputs.printDebug("Response code is " + response.statusCode() + ". Deleting Wire access cookie...");
-            WireStorage.wireAccessCookie = null;
-            WireStorage.deleteFile(WireStorage.wireDataFile);
+            WireStorage.cookie = null;
+            WireStorage.deleteFile();
         }
         return false;
     }

@@ -54,7 +54,7 @@ public class CLI implements Runnable
         Outputs.printDebug("Update thread stopped");
 
         Outputs.printDebug("Writing data to file...");
-        WireStorage.writeDataToFile();
+        WireStorage.saveDataInFile();
         Outputs.printDebug("Storage written to file");
 
         Outputs.printInfo("Exiting program...");

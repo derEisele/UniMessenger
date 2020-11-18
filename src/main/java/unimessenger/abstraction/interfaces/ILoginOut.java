@@ -6,5 +6,4 @@ public interface ILoginOut
     boolean login();
     boolean logout();
     boolean needsRefresh();
-    boolean refresh();
 }
