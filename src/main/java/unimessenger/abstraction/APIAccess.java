@@ -1,14 +1,8 @@
 package unimessenger.abstraction;
 
-import unimessenger.abstraction.interfaces.IConversations;
-import unimessenger.abstraction.interfaces.ILoginOut;
-import unimessenger.abstraction.interfaces.IMessages;
-import unimessenger.abstraction.interfaces.IUtil;
-import unimessenger.abstraction.wire.WireConversations;
-import unimessenger.abstraction.wire.WireLogin;
-import unimessenger.abstraction.wire.WireMessages;
-import unimessenger.abstraction.wire.WireUtil;
-import unimessenger.util.Variables;
+import unimessenger.abstraction.interfaces.*;
+import unimessenger.abstraction.wire.*;
+import unimessenger.util.enums.SERVICE;
 
 public class APIAccess
 {
@@ -16,8 +10,9 @@ public class APIAccess
     private final ILoginOut WIRE_LOGIN = new WireLogin();
     private final IMessages WIRE_MESSAGES = new WireMessages();
     private final IUtil WIRE_UTIL = new WireUtil();
+    private final IData WIRE_DATA = new WireData();
 
-    public IConversations getConversationInterface(Variables.SERVICE service)
+    public IConversations getConversationInterface(SERVICE service)
     {
         switch(service)
         {
@@ -30,7 +25,7 @@ public class APIAccess
                 return null;
         }
     }
-    public ILoginOut getLoginInterface(Variables.SERVICE service)
+    public ILoginOut getLoginInterface(SERVICE service)
     {
         switch(service)
         {
@@ -43,7 +38,7 @@ public class APIAccess
                 return null;
         }
     }
-    public IMessages getMessageInterface(Variables.SERVICE service)
+    public IMessages getMessageInterface(SERVICE service)
     {
         switch(service)
         {
@@ -56,12 +51,25 @@ public class APIAccess
                 return null;
         }
     }
-    public IUtil getUtilInterface(Variables.SERVICE service)
+    public IUtil getUtilInterface(SERVICE service)
     {
         switch(service)
         {
             case WIRE:
                 return WIRE_UTIL;
+            case TELEGRAM:
+                return null;
+            case NONE:
+            default:
+                return null;
+        }
+    }
+    public IData getDataInterface(SERVICE service)
+    {
+        switch(service)
+        {
+            case WIRE:
+                return WIRE_DATA;
             case TELEGRAM:
                 return null;
             case NONE:

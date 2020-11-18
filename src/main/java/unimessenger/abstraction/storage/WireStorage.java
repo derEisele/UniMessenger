@@ -1,8 +1,9 @@
-package unimessenger.util;
+package unimessenger.abstraction.storage;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import unimessenger.userinteraction.Outputs;
+import unimessenger.util.enums.SERVICE;
 
 import java.io.File;
 import java.io.FileReader;
@@ -10,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-public class Storage
+public class WireStorage
 {
     public static String wireUserID;
     public static String wireBearerToken;
@@ -47,7 +48,7 @@ public class Storage
     {
         return wireBearerToken != null && wireBearerTokenExpiringTime != null && wireBearerTokenExpiringTime.getTime() > System.currentTimeMillis();
     }
-    public static void clearUserData(Variables.SERVICE service)
+    public static void clearUserData(SERVICE service)
     {
         switch(service)
         {

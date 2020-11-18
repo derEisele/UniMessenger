@@ -1,9 +1,10 @@
 package unimessenger.userinteraction.menu;
 
 import unimessenger.abstraction.APIAccess;
+import unimessenger.abstraction.wire.WireMessages;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.Variables;
+import unimessenger.util.enums.SERVICE;
 
 public class MenuConversationList
 {
@@ -15,6 +16,7 @@ public class MenuConversationList
         System.out.println("4) Show Main Menu");
         System.out.println("5) Exit Program");
         System.out.println("10) Refresh Token");//TODO: Remove
+        System.out.println("11) Print Notifications");//TODO: Remove
 
         int userInput = Outputs.getIntAnswerFrom("Please enter the number of the option you would like to choose.");
         switch(userInput)
@@ -26,9 +28,10 @@ public class MenuConversationList
                 selectChat();
                 break;
             case 3:
-                new APIAccess().getLoginInterface(CLI.currentService).logout();
+                if(new APIAccess().getLoginInterface(CLI.currentService).logout()) System.out.println("Successfully logged out");
+                else System.out.println("There was a logout error");
             case 4:
-                CLI.currentService = Variables.SERVICE.NONE;
+                CLI.currentService = SERVICE.NONE;
                 CLI.currentMenu = CLI.MENU.MAIN;
                 break;
             case 5:
@@ -36,6 +39,9 @@ public class MenuConversationList
                 break;
             case 10:
                 if(new APIAccess().getUtilInterface(CLI.currentService).refreshSession()) System.out.println("Successfully refreshed your bearer token");
+                break;
+            case 11:
+                WireMessages.PrintNotifications();
                 break;
             default:
                 Outputs.cannotHandleUserInput();

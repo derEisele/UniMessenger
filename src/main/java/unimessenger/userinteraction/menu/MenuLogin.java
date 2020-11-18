@@ -3,12 +3,17 @@ package unimessenger.userinteraction.menu;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import unimessenger.abstraction.APIAccess;
+import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
+import unimessenger.abstraction.interfaces.ILoginOut;
+import unimessenger.abstraction.storage.WireStorage;
+import unimessenger.apicommunication.HTTP;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.Parsers;
-import unimessenger.util.Storage;
-import unimessenger.util.Variables;
+import unimessenger.util.Updater;
+import unimessenger.util.enums.REQUEST;
+import unimessenger.util.enums.SERVICE;
 
 import java.net.http.HttpResponse;
 
@@ -25,10 +30,14 @@ public class MenuLogin
         switch(userInput)
         {
             case 1:
-                tryUserLogin();
+                if(connectUser())
+                {
+                    Updater.addService(CLI.currentService);
+                    CLI.currentMenu = CLI.MENU.CONVERSATION_LIST;
+                }
                 break;
             case 2:
-                CLI.currentService = Variables.SERVICE.NONE;
+                CLI.currentService = SERVICE.NONE;
                 CLI.currentMenu = CLI.MENU.MAIN;
                 break;
             case 3:
@@ -36,6 +45,7 @@ public class MenuLogin
                 break;
             case 10:
                 autoLogin();
+                Updater.addService(CLI.currentService);
                 CLI.currentMenu = CLI.MENU.CONVERSATION_LIST;
                 break;
             default:
@@ -44,77 +54,60 @@ public class MenuLogin
         }
     }
 
-    private static void tryUserLogin()
+    private static boolean connectUser()
     {
-        boolean loginSuccessful = false;
-        switch(CLI.currentService)
-        {
-            case WIRE:
-                if(loginWire()) loginSuccessful = true;
-                break;
-            case TELEGRAM:
-                if(loginTelegram()) loginSuccessful = true;
-                break;
-            case NONE:
-            default:
-                Outputs.printError("User tried to log in to an unknown service");
-                break;
-        }
+        ILoginOut login = new APIAccess().getLoginInterface(CLI.currentService);
 
-        if(loginSuccessful) CLI.currentMenu = CLI.MENU.CONVERSATION_LIST;
-    }
+        if(login.checkIfLoggedIn() && login.refresh()) return true;
+        if(login.login()) return true;
 
-    private static boolean loginWire()
-    {
-        //TODO: Test if user is logged in already and ask for credentials if not
-        return false;
-    }
-    private static boolean loginTelegram()
-    {
-        //TODO: Test if user is logged in already and ask for credentials if not
+        System.out.println("Failed to log in");
         return false;
     }
 
 
 
-    private static boolean autoLogin()//TODO: Remove
+    @Deprecated
+    private static void autoLogin()
     {
-        boolean persist = Outputs.getBoolAnswerFrom("Do you want to stay logged in?");
-
-        String url = URL.WIRE + URL.WIRE_LOGIN;
-        if(persist) url += URL.WIRE_PERSIST;
+        String url = URL.WIRE + URL.WIRE_LOGIN + URL.WIRE_PERSIST;
 
         JSONObject obj = new JSONObject();
         obj.put("email", "pechtl97@gmail.com");
         obj.put("password", "Passwort1!");
         String body = obj.toJSONString();
 
-        String[] headers = new String[] {"content-type", "application/json", "accept", "application/json"};
+        String[] headers = new String[] {
+                Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
+                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
-        return handleResponse(CLI.userHTTP.sendRequest(url, Variables.REQUESTTYPE.POST, body, headers));
+        handleResponse(new HTTP().sendRequest(url, REQUEST.POST, body, headers));
     }
-    public static boolean handleResponse(HttpResponse<String> response)//TODO: Remove
+    @Deprecated
+    public static void handleResponse(HttpResponse<String> response)
     {
-        if(response == null || response.statusCode() != 200) return false;
+        if(response == null || response.statusCode() != 200) return;
 
         JSONObject obj;
         try
         {
             obj = (JSONObject) new JSONParser().parse(response.body());
-            Storage.wireUserID = obj.get("user").toString();
-            Storage.wireBearerToken = obj.get("access_token").toString();
-            Storage.setWireBearerTime(Integer.parseInt(obj.get("expires_in").toString()));
-            Storage.wireAccessCookie = Parsers.parseCookieID(response.headers().map().get("set-cookie").get(0));
+            WireStorage.wireUserID = obj.get("user").toString();
+            WireStorage.wireBearerToken = obj.get("access_token").toString();
+            WireStorage.setWireBearerTime(Integer.parseInt(obj.get("expires_in").toString()));
+
+            String raw = response.headers().map().get("set-cookie").get(0);
+            String[] arr = raw.split("zuid=");
+            if(arr.length > 1) arr = arr[1].split(";");
+            WireStorage.wireAccessCookie = "zuid=" + arr[0];
 
             Outputs.printDebug("Token Type: " + obj.get("token_type"));
             Outputs.printDebug("Expires in: " + obj.get("expires_in"));
-            Outputs.printDebug("Access Token: " + Storage.wireBearerToken);
-            Outputs.printDebug("User: " + Storage.wireUserID);
-            Outputs.printDebug("Cookie: " + Storage.wireAccessCookie);
+            Outputs.printDebug("Access Token: " + WireStorage.wireBearerToken);
+            Outputs.printDebug("User: " + WireStorage.wireUserID);
+            Outputs.printDebug("Cookie: " + WireStorage.wireAccessCookie);
         } catch(ParseException ignored)
         {
-            return false;
         }
-        return true;
     }
 }

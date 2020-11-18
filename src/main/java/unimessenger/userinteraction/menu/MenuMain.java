@@ -2,7 +2,7 @@ package unimessenger.userinteraction.menu;
 
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.Variables;
+import unimessenger.util.enums.SERVICE;
 
 public class MenuMain
 {
@@ -16,11 +16,11 @@ public class MenuMain
         switch(userInput)
         {
             case 1:
-                CLI.currentService = Variables.SERVICE.WIRE;
+                CLI.currentService = SERVICE.WIRE;
                 CLI.currentMenu = CLI.MENU.LOGIN;
                 break;
             case 2:
-                CLI.currentService = Variables.SERVICE.TELEGRAM;
+                CLI.currentService = SERVICE.TELEGRAM;
                 CLI.currentMenu = CLI.MENU.LOGIN;
                 break;
             case 3:

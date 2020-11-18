@@ -1,6 +1,6 @@
 package unimessenger.apicommunication;
 
-import unimessenger.util.Variables;
+import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -10,7 +10,7 @@ public class HTTP
 {
     static HttpClient client = HttpClient.newHttpClient();
 
-    public HttpResponse<String> sendRequest(String url, Variables.REQUESTTYPE type, String body, String... headers)
+    public HttpResponse<String> sendRequest(String url, REQUEST type, String body, String... headers)
     {
         HttpRequest request = null;
         HttpResponse<String> response = null;

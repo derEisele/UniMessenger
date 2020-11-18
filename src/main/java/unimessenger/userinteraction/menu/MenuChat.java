@@ -2,7 +2,7 @@ package unimessenger.userinteraction.menu;
 
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.Variables;
+import unimessenger.util.enums.SERVICE;
 
 public class MenuChat
 {
@@ -24,7 +24,7 @@ public class MenuChat
                 CLI.currentMenu = CLI.MENU.CONVERSATION_LIST;
                 break;
             case 3:
-                CLI.currentService = Variables.SERVICE.NONE;
+                CLI.currentService = SERVICE.NONE;
                 CLI.currentMenu = CLI.MENU.MAIN;
                 break;
             case 4:
