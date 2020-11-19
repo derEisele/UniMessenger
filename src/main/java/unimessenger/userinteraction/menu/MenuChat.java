@@ -2,15 +2,16 @@ package unimessenger.userinteraction.menu;
 
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
+import unimessenger.util.enums.SERVICE;
 
-public class MenuWireChat
+public class MenuChat
 {
     public static void showMenu()
     {
-        //TODO: Show wire chat
+        //TODO: Show chat of current service
 
         System.out.println("1) Write new Message");
-        System.out.println("2) Show Wire Overview");
+        System.out.println("2) Show all Conversations in '" + CLI.currentService + "'");
         System.out.println("3) Show Main Menu");
         System.out.println("4) Exit Program");
         int userInput = Outputs.getIntAnswerFrom("Please enter the number of the option you would like to choose.");
@@ -20,10 +21,11 @@ public class MenuWireChat
                 sendMessage();
                 break;
             case 2:
-                CLI.currentMenu = CLI.MENU.WireOverview;
+                CLI.currentMenu = CLI.MENU.CONVERSATION_LIST;
                 break;
             case 3:
-                CLI.currentMenu = CLI.MENU.MainMenu;
+                CLI.currentService = SERVICE.NONE;
+                CLI.currentMenu = CLI.MENU.MAIN;
                 break;
             case 4:
                 CLI.currentMenu = CLI.MENU.EXIT;

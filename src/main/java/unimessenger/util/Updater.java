@@ -1,32 +1,77 @@
 package unimessenger.util;
 
+import unimessenger.abstraction.APIAccess;
+import unimessenger.abstraction.interfaces.ILoginOut;
+import unimessenger.apicommunication.HTTP;
+import unimessenger.userinteraction.Outputs;
+import unimessenger.util.enums.SERVICE;
+
 import java.util.ArrayList;
 
-public class Updater implements Runnable
+public class Updater implements Runnable//TODO check if the updater works if the bearer token is outdated
 {
-    public static ArrayList<Variables.SERVICE> runningServices = new ArrayList<>();
+    public static ArrayList<SERVICE> runningServices;
+    private static HTTP updateHTTP;
 
     @Override
     public void run()
     {
-        initializeServices();
+        updateHTTP = new HTTP();
+        runningServices = new ArrayList<>();
 
-        while(!runningServices.isEmpty())
+        while(true)//TODO: Use a more elegant way
         {
-            for(Variables.SERVICE service : runningServices)
+            for(SERVICE service : runningServices)
             {
-                sendRequestToServer(service);
+                if(validateAccess(service))
+                {
+                    new APIAccess().getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
+                    //TODO: Refresh messages
+                }
+                else removeService(service);
+            }
+            try
+            {
+                Thread.sleep(2000);
+            } catch(InterruptedException ignored)
+            {
             }
         }
     }
 
-    private void sendRequestToServer(Variables.SERVICE service)
+    private boolean validateAccess(SERVICE service)
     {
-        //TODO: Send HTTPRequest to server of specified service and ask for new messages
+        APIAccess access = new APIAccess();
+        ILoginOut login = access.getLoginInterface(service);
+        switch(service)
+        {
+            case WIRE:
+            case TELEGRAM:
+                if(login.checkIfLoggedIn())
+                {
+                    if(login.needsRefresh())
+                    {
+                        return access.getUtilInterface(service).refreshSession();
+                    }
+                    else return true;
+                }
+                else if(access.getUtilInterface(service).refreshSession()) return true;
+                return login.login();
+            case NONE:
+            default:
+                Outputs.printError("Unknown service: " + service);
+                break;
+        }
+        return true;
     }
 
-    private static void initializeServices()
+    public static void addService(SERVICE service)
     {
-        runningServices.add(Variables.SERVICE.WIRE);
+        if(!runningServices.contains(service)) runningServices.add(service);
+    }
+
+    public static void removeService(SERVICE service)
+    {
+        runningServices.remove(service);
     }
 }
