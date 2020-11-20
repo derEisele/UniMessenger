@@ -37,6 +37,7 @@ public class WireUtil implements IUtil
                 assert false;
                 obj = (JSONObject) new JSONParser().parse(response.body());
                 WireStorage.setBearerToken(obj.get("access_token").toString(), Integer.parseInt(obj.get("expires_in").toString()));
+                WireStorage.userID = obj.get("user").toString();
                 Outputs.printDebug("Successfully refreshed token");
                 return true;
             } catch(ParseException ignored)

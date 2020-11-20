@@ -6,12 +6,14 @@ import unimessenger.userinteraction.menu.MenuChat;
 import unimessenger.userinteraction.menu.MenuConversationList;
 import unimessenger.userinteraction.menu.MenuLogin;
 import unimessenger.userinteraction.menu.MenuMain;
+import unimessenger.util.enums.MENU;
 import unimessenger.util.enums.SERVICE;
 
 public class CLI implements Runnable
 {
     public static MENU currentMenu;
     public static SERVICE currentService;
+    public static String currentChatID;
 
     @Override
     public void run()
@@ -23,10 +25,12 @@ public class CLI implements Runnable
     {
         currentMenu = MENU.MAIN;
         currentService = SERVICE.NONE;
+        currentChatID = null;
         while(currentMenu != MENU.EXIT)
         {
             System.out.println("\n=================================");
             System.out.println("Current Menu: " + currentMenu);
+            System.out.println("=================================");
             System.out.println("Options:");
             switch(currentMenu)
             {
@@ -50,7 +54,7 @@ public class CLI implements Runnable
             }
         }
         Outputs.printDebug("Stopping update thread...");
-        Main.updt.stop();
+        Main.updt.interrupt();
         Outputs.printDebug("Update thread stopped");
 
         Outputs.printDebug("Writing data to file...");
@@ -58,14 +62,5 @@ public class CLI implements Runnable
         Outputs.printDebug("Storage written to file");
 
         Outputs.printInfo("Exiting program...");
-    }
-
-    public enum MENU
-    {
-        MAIN,
-        LOGIN,
-        CONVERSATION_LIST,
-        CHAT,
-        EXIT
     }
 }

@@ -12,6 +12,7 @@ import unimessenger.apicommunication.HTTP;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.Updater;
+import unimessenger.util.enums.MENU;
 import unimessenger.util.enums.REQUEST;
 import unimessenger.util.enums.SERVICE;
 
@@ -33,20 +34,20 @@ public class MenuLogin
                 if(connectUser())
                 {
                     Updater.addService(CLI.currentService);
-                    CLI.currentMenu = CLI.MENU.CONVERSATION_LIST;
+                    CLI.currentMenu = MENU.CONVERSATION_LIST;
                 }
                 break;
             case 2:
                 CLI.currentService = SERVICE.NONE;
-                CLI.currentMenu = CLI.MENU.MAIN;
+                CLI.currentMenu = MENU.MAIN;
                 break;
             case 3:
-                CLI.currentMenu = CLI.MENU.EXIT;
+                CLI.currentMenu = MENU.EXIT;
                 break;
             case 10:
                 autoLogin();
                 Updater.addService(CLI.currentService);
-                CLI.currentMenu = CLI.MENU.CONVERSATION_LIST;
+                CLI.currentMenu = MENU.CONVERSATION_LIST;
                 break;
             default:
                 Outputs.cannotHandleUserInput();

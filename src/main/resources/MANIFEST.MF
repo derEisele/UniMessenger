@@ -1,0 +1,5 @@
+Manifest-Version: 2.4
+Created-By: Felix Pechtl
+Build-Jdk: $(java.version}
+Main-Class: unimessenger.Main
+Class-Path: json-simple-1.1.1.jar

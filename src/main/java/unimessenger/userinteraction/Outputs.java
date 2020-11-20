@@ -30,19 +30,30 @@ public class Outputs
         System.out.println(question);
         System.out.print("Input: ");
 
-        printDebug("Waiting for user-input...");
-
-        //TODO: Validate if input is an int
-        return sc.nextInt();
+        int ret = -1;
+        try
+        {
+            String in = sc.next();
+            ret = Integer.parseInt(in);
+        } catch(Exception ignored)
+        {
+            printError("Input was not an integer");
+        }
+        return ret;
     }
     public static String getStringAnswerFrom(String question)
     {
         System.out.println(question);
         System.out.print("Input: ");
 
-        printDebug("Waiting for user-input...");
-
-        return sc.next();
+        String ret = null;
+        try
+        {
+            ret = sc.next();
+        } catch(Exception ignored)
+        {
+        }
+        return ret;
     }
     public static boolean getBoolAnswerFrom(String question)
     {

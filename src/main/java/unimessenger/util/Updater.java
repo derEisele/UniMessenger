@@ -2,24 +2,21 @@ package unimessenger.util;
 
 import unimessenger.abstraction.APIAccess;
 import unimessenger.abstraction.interfaces.ILoginOut;
-import unimessenger.apicommunication.HTTP;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.SERVICE;
 
 import java.util.ArrayList;
 
-public class Updater implements Runnable//TODO check if the updater works if the bearer token is outdated
+public class Updater implements Runnable
 {
     public static ArrayList<SERVICE> runningServices;
-    private static HTTP updateHTTP;
 
     @Override
     public void run()
     {
-        updateHTTP = new HTTP();
         runningServices = new ArrayList<>();
 
-        while(true)//TODO: Use a more elegant way
+        while(!Thread.interrupted())
         {
             for(SERVICE service : runningServices)
             {
@@ -35,6 +32,7 @@ public class Updater implements Runnable//TODO check if the updater works if the
                 Thread.sleep(2000);
             } catch(InterruptedException ignored)
             {
+                return;
             }
         }
     }
