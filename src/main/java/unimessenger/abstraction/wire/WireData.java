@@ -13,7 +13,6 @@ public class WireData implements IData
     @Override
     public ArrayList<String> getAllConversationIDs()
     {
-        //TODO: Check if conversations are already sorted; if not, sort after most recent activity
         ArrayList<String> ids = new ArrayList<>();
 
         for(WireConversation con : WireStorage.conversations)

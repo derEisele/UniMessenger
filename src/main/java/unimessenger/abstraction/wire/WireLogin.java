@@ -46,7 +46,7 @@ public class WireLogin implements ILoginOut
     }
 
     @Override
-    public boolean logout()//Todo dont put this into the link but into the header because best practices see wire docs
+    public boolean logout()
     {
         String url = URL.WIRE + URL.WIRE_LOGOUT + URL.WIRE_TOKEN + WireStorage.getBearerToken();
         String[] headers = new String[]{

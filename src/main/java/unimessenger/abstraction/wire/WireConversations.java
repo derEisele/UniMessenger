@@ -34,7 +34,7 @@ public class WireConversations implements IConversations
         } else if(response.statusCode() == 200)
         {
             //TODO: If "has more" key in body is true, ask for more conversations
-            //TODO: Check if conversations are already sorted
+            //TODO: Sort chats after most recent activity
 
             ArrayList<WireConversation> newConList = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package unimessenger.userinteraction.menu;
 
 import unimessenger.abstraction.APIAccess;
+import unimessenger.abstraction.interfaces.IMessages;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.MENU;
@@ -54,8 +55,12 @@ public class MenuChat
 
     private static boolean sendMessage()
     {
-        //TODO: Handle message sending
-        return false;
+        String text = Outputs.getTextAnswerFrom("");
+        System.out.println("Sending: " + text);
+        //TODO: Add multi-line support, timed messages and abort option
+
+        IMessages msg = new APIAccess().getMessageInterface(CLI.currentService);
+        return msg.sendMessage(CLI.currentChatID, text);
     }
 
     @Deprecated

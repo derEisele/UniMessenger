@@ -8,6 +8,7 @@ import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.apicommunication.HTTP;
 import unimessenger.util.enums.REQUEST;
 
+import java.lang.constant.Constable;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -40,8 +41,8 @@ public class WireMessages implements IMessages
 
         ArrayList<String> members = new WireData().getConversationMembersFromID(chatID);
         if(members.size() > 0) members.remove(0);
-        Map recipients = new LinkedHashMap(1);
-        Map clientMap = new LinkedHashMap(members.size());
+        Map<String, Map<String, Constable>> recipients = new LinkedHashMap<>(1);
+        Map<String, Constable> clientMap = new LinkedHashMap<>(members.size());
 
         for(String id : members)
         {
@@ -60,7 +61,6 @@ public class WireMessages implements IMessages
     {
         HTTP msgSender = new HTTP();
         System.out.println("List of all conversations in Wire:");
-        //TODO: Show a list of all Wire-conversations
         String url = URL.WIRE + URL.WIRE_LAST_NOTIFICATION + URL.WIRE_TOKEN + WireStorage.getBearerToken();
         String[] headers = new String[]{
                 "accept", "application/json",

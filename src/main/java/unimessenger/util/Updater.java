@@ -23,7 +23,7 @@ public class Updater implements Runnable
                 if(validateAccess(service))
                 {
                     new APIAccess().getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
-                    //TODO: Refresh messages
+                    //TODO: Refresh messages (Might need to use /await)
                 }
                 else removeService(service);
             }

@@ -2,6 +2,8 @@ package unimessenger.userinteraction;
 
 import unimessenger.Main;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class Outputs
@@ -11,6 +13,7 @@ public class Outputs
     private static final String DEBUG = "\u001B[33m[DEBUG]";
     private static final String ERROR = "\u001B[31m[ERROR]";
     private static final Scanner sc = new Scanner(System.in);
+    private static final BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
 
     public static void printInfo(String text)
     {
@@ -71,6 +74,22 @@ public class Outputs
             printDebug("Invalid user-input");
             System.out.println("Invalid input. Options are 'yes' or 'no'");
         }
+    }
+    public static String getTextAnswerFrom(String question)
+    {
+        System.out.println(question);
+        System.out.print("Input: ");
+
+        String ret = null;
+        try
+        {
+            ret = rd.readLine();
+        } catch(Exception ignored)
+        {
+            Outputs.printError("Problem with reading a line");
+        }
+
+        return ret;
     }
     public static void cannotHandleUserInput()
     {
