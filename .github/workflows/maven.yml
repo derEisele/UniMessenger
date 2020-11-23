@@ -6,7 +6,11 @@ name: Maven build test
 on:
   push:
     branches:
-      - f*
+    - f*
+  pull_request:
+    branches:
+    - master	
+    - dev
   workflow_dispatch:
 
 jobs:
