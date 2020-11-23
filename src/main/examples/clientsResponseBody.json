@@ -1,0 +1,50 @@
+[
+  {
+    "time": "2020-11-16T11:06:28.452Z",
+    "location": {
+      "lat": 48.0945,
+      "lon": 9.7916
+    },
+    "model": "Chrome",
+    "id": "2b3f9a4f0d229f4c",
+    "type": "permanent",
+    "class": "desktop",
+    "label": "Windows 10 64-bit 10"
+  },
+  {
+    "time": "2020-11-14T20:54:21.958Z",
+    "location": {
+      "lat": 50.1188,
+      "lon": 8.6843
+    },
+    "model": "Chrome",
+    "id": "3a3f38eb540347d2",
+    "type": "permanent",
+    "class": "desktop",
+    "label": "Linux 64-bit"
+  },
+  {
+    "time": "2020-11-15T14:45:56.268Z",
+    "location": {
+      "lat": 47.8093,
+      "lon": 9.637
+    },
+    "model": "Chrome (Temporary)",
+    "id": "4c86bfd1b8b25d39",
+    "type": "temporary",
+    "class": "desktop",
+    "label": "Windows 10 64-bit 10"
+  },
+  {
+    "time": "2020-11-18T10:35:17.389Z",
+    "location": {
+      "lat": 47.8093,
+      "lon": 9.637
+    },
+    "model": "Chrome",
+    "id": "7ec6cfc08fc9db51",
+    "type": "permanent",
+    "class": "desktop",
+    "label": "Windows 10 64-bit 10"
+  }
+]

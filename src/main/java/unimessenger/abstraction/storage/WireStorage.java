@@ -2,8 +2,9 @@ package unimessenger.abstraction.storage;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
+import unimessenger.abstraction.storage.MessengerStructure.WireProfile;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.MessengerStructure.WireConversation;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,11 +15,13 @@ import java.util.ArrayList;
 public class WireStorage
 {
     public static String userID;
+    public static String clientID = "7ec6cfc08fc9db51";
     private static String bearerToken;
     public static String cookie;
     private static Timestamp bearerExpiringTime;
     public static final String storageFile = "../dataWire.json";
 
+    public static WireProfile selfProfile = new WireProfile();
     public static ArrayList<WireConversation> conversations = new ArrayList<>();
 
     public static void saveDataInFile(String accessCookie)

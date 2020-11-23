@@ -7,11 +7,11 @@ import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
 import unimessenger.abstraction.interfaces.IConversations;
+import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
+import unimessenger.abstraction.storage.MessengerStructure.WirePerson;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.apicommunication.HTTP;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.MessengerStructure.WireConversation;
-import unimessenger.util.MessengerStructure.WirePerson;
 import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpResponse;
