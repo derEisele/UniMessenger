@@ -69,6 +69,6 @@ public class MenuChat
         APIAccess access = new APIAccess();
         ArrayList<String> conID = access.getDataInterface(CLI.currentService).getAllConversationIDs();
         conID.remove(null);
-        return access.getMessageInterface(CLI.currentService).sendMessage(conID.get(0), "Test");
+        return access.getMessageInterface(CLI.currentService).sendMessage(CLI.currentChatID, "TestVomClient");
     }
 }

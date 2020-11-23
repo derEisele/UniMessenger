@@ -78,7 +78,7 @@ public class MenuLogin
     @Deprecated
     private static void autoLogin()
     {
-        String url = URL.WIRE + URL.WIRE_LOGIN + URL.WIRE_PERSIST;
+        String url = URL.WIRE + URL.WIRE_LOGIN;
 
         JSONObject obj = new JSONObject();
         obj.put("email", "pechtl97@gmail.com");

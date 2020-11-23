@@ -16,6 +16,7 @@ public class WireStorage
 {
     public static String userID;
     public static String clientID = "7ec6cfc08fc9db51";
+    public static boolean persistent = false;
     private static String bearerToken;
     public static String cookie;
     private static Timestamp bearerExpiringTime;
@@ -34,6 +35,7 @@ public class WireStorage
             obj.put("accessCookie", accessCookie);
             obj.put("bearerToken", bearerToken);
             obj.put("bearerTime", bearerExpiringTime.getTime());
+            obj.put("clientID", clientID);
 
             try
             {
@@ -82,9 +84,10 @@ public class WireStorage
         try
         {
             JSONObject obj = (JSONObject) new JSONParser().parse(new FileReader(storageFile));
-            cookie = (String) obj.get("accessCookie");
-            bearerToken = (String) obj.get("bearerToken");
+            cookie = obj.get("accessCookie").toString();
+            bearerToken = obj.get("bearerToken").toString();
             bearerExpiringTime = new Timestamp((long) obj.get("bearerTime"));
+            clientID = obj.get("clientID").toString();
         } catch(Exception ignored)
         {
             Outputs.printError("Failed to load Wire file");

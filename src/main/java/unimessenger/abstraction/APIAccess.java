@@ -1,7 +1,7 @@
 package unimessenger.abstraction;
 
 import unimessenger.abstraction.interfaces.*;
-import unimessenger.abstraction.wire.*;
+import unimessenger.abstraction.interfaces.wire.*;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.SERVICE;
 

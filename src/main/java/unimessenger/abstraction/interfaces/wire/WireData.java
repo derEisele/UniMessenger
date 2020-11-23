@@ -1,4 +1,4 @@
-package unimessenger.abstraction.wire;
+package unimessenger.abstraction.interfaces.wire;
 
 import unimessenger.abstraction.interfaces.IData;
 import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
@@ -35,12 +35,12 @@ public class WireData implements IData
     }
 
     @Override
-    public ArrayList<String> getConversationMembersFromID(String id)//TODO: Check if members are in conversation list and if all are returned
+    public ArrayList<String> getConversationMembersFromID(String id)
     {
         WireConversation conversation = null;
-        for(int i = 0; i < WireStorage.conversations.size(); i++)
+        for(WireConversation con : WireStorage.conversations)
         {
-            if(WireStorage.conversations.get(i).id.equals(id)) conversation = WireStorage.conversations.get(i);
+            if(con.id.equals(id)) conversation = con;
         }
 
         ArrayList<String> members = new ArrayList<>();
