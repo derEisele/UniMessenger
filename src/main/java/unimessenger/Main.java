@@ -28,10 +28,8 @@ public class Main
         WireStorage.readDataFromFiles();
         Outputs.printDebug("Login files loaded");
 
-        Outputs.printError("Missing function");//TODO: Either ask user to select a messenger service, or show all conversations of all messenger services in 1 list
-
         Outputs.printDebug("Loading stored messages...");
-        Outputs.printError("Missing function");//TODO: Load files with previously saved messages of selected messenger or all messengers
+        Outputs.printError("Missing function");//TODO: Load files with previously saved messages of all messengers
         Outputs.printDebug("Stored messages loaded");
 
         Outputs.printDebug("Creating new Thread for Updater");

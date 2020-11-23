@@ -1,4 +1,4 @@
-package unimessenger.util.MessengerStructure;
+package unimessenger.abstraction.storage.MessengerStructure;
 
 public class WirePerson
 {

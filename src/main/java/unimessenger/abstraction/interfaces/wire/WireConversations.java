@@ -1,4 +1,4 @@
-package unimessenger.abstraction.wire;
+package unimessenger.abstraction.interfaces.wire;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,11 +7,11 @@ import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
 import unimessenger.abstraction.interfaces.IConversations;
+import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
+import unimessenger.abstraction.storage.MessengerStructure.WirePerson;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.apicommunication.HTTP;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.MessengerStructure.WireConversation;
-import unimessenger.util.MessengerStructure.WirePerson;
 import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpResponse;
@@ -34,7 +34,7 @@ public class WireConversations implements IConversations
         } else if(response.statusCode() == 200)
         {
             //TODO: If "has more" key in body is true, ask for more conversations
-            //TODO: Check if conversations are already sorted
+            //TODO: Sort chats after most recent activity
 
             ArrayList<WireConversation> newConList = new ArrayList<>();
 

@@ -1,5 +1,7 @@
 package unimessenger.abstraction.interfaces;
 
-public interface IUtil {
+public interface IUtil
+{
     boolean refreshSession();
+    boolean loadProfile();
 }

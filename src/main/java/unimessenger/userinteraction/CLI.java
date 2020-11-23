@@ -1,6 +1,8 @@
 package unimessenger.userinteraction;
 
 import unimessenger.Main;
+import unimessenger.abstraction.APIAccess;
+import unimessenger.abstraction.interfaces.IData;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.userinteraction.menu.MenuChat;
 import unimessenger.userinteraction.menu.MenuConversationList;
@@ -28,8 +30,10 @@ public class CLI implements Runnable
         currentChatID = null;
         while(currentMenu != MENU.EXIT)
         {
+            IData data = new APIAccess().getDataInterface(currentService);
             System.out.println("\n=================================");
-            System.out.println("Current Menu: " + currentMenu);
+            if(currentMenu == MENU.CHAT) System.out.println("Conversation: " + data.getConversationNameFromID(currentChatID));
+            else System.out.println("Current Menu: " + currentMenu);
             System.out.println("=================================");
             System.out.println("Options:");
             switch(currentMenu)

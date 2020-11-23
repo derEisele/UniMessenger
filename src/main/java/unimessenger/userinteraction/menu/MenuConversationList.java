@@ -2,7 +2,7 @@ package unimessenger.userinteraction.menu;
 
 import unimessenger.abstraction.APIAccess;
 import unimessenger.abstraction.interfaces.IData;
-import unimessenger.abstraction.wire.WireMessages;
+import unimessenger.abstraction.interfaces.wire.WireMessages;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.Updater;

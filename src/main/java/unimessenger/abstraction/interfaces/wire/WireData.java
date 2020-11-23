@@ -1,10 +1,10 @@
-package unimessenger.abstraction.wire;
+package unimessenger.abstraction.interfaces.wire;
 
 import unimessenger.abstraction.interfaces.IData;
+import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
+import unimessenger.abstraction.storage.MessengerStructure.WirePerson;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.userinteraction.Outputs;
-import unimessenger.util.MessengerStructure.WireConversation;
-import unimessenger.util.MessengerStructure.WirePerson;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,6 @@ public class WireData implements IData
     @Override
     public ArrayList<String> getAllConversationIDs()
     {
-        //TODO: Check if conversations are already sorted; if not, sort after most recent activity
         ArrayList<String> ids = new ArrayList<>();
 
         for(WireConversation con : WireStorage.conversations)
@@ -36,12 +35,12 @@ public class WireData implements IData
     }
 
     @Override
-    public ArrayList<String> getConversationMembersFromID(String id)//TODO: Check if members are in conversation list and if all are returned
+    public ArrayList<String> getConversationMembersFromID(String id)
     {
         WireConversation conversation = null;
-        for(int i = 0; i < WireStorage.conversations.size(); i++)
+        for(WireConversation con : WireStorage.conversations)
         {
-            if(WireStorage.conversations.get(i).id.equals(id)) conversation = WireStorage.conversations.get(i);
+            if(con.id.equals(id)) conversation = con;
         }
 
         ArrayList<String> members = new ArrayList<>();

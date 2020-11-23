@@ -59,32 +59,39 @@ public class MenuLogin
     {
         APIAccess access = new APIAccess();
         ILoginOut login = access.getLoginInterface(CLI.currentService);
+        boolean loggedIn = false;
 
-        if(login.checkIfLoggedIn() && access.getUtilInterface(CLI.currentService).refreshSession()) return true;
-        if(login.login()) return true;
-
-        System.out.println("Failed to log in");
-        return false;
+        if(login.checkIfLoggedIn() && access.getUtilInterface(CLI.currentService).refreshSession()) loggedIn = true;
+        else if(login.login()) loggedIn = true;
+        if(loggedIn)
+        {
+            if(!access.getUtilInterface(CLI.currentService).loadProfile()) Outputs.printError("Couldn't load profile");
+            return true;
+        } else
+        {
+            System.out.println("Failed to log in");
+            return false;
+        }
     }
-
 
 
     @Deprecated
     private static void autoLogin()
     {
-        String url = URL.WIRE + URL.WIRE_LOGIN + URL.WIRE_PERSIST;
+        String url = URL.WIRE + URL.WIRE_LOGIN;
 
         JSONObject obj = new JSONObject();
         obj.put("email", "pechtl97@gmail.com");
         obj.put("password", "Passwort1!");
         String body = obj.toJSONString();
 
-        String[] headers = new String[] {
+        String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
         handleResponse(new HTTP().sendRequest(url, REQUEST.POST, body, headers));
     }
+
     @Deprecated
     public static void handleResponse(HttpResponse<String> response)
     {
