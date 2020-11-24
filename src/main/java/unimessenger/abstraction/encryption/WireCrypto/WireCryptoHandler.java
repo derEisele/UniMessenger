@@ -9,7 +9,7 @@ import java.util.Base64;
 
 public class WireCryptoHandler
 {
-    static CryptoBox box;//TODO: Get the right box
+    static CryptoBox box;//TODO: Get the box
 
     public static Prekey[] generatePreKeys(int start, int count)
     {
