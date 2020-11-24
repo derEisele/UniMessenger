@@ -43,7 +43,7 @@ public class WireCryptoHandler
 
     }
 
-    public static String encrypt(Prekey pk, String content)
+    public static String encrypt(String userID, String clientID, Prekey pk, String content)
     {
         //TODO: Return "OTR Content"
         return "OTR Content";

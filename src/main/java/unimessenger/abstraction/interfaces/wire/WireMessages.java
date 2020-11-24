@@ -63,7 +63,7 @@ public class WireMessages implements IMessages
                 if(!(id.equals(WireStorage.userID) && userClients.get(0).equals(WireStorage.clientID)))
                 {
                     Prekey pk = getPreKeyForClient(id, userClients.get(0));
-                    clientMap.put(userClients.get(0), WireCryptoHandler.encrypt(pk, msg));
+                    clientMap.put(userClients.get(0), WireCryptoHandler.encrypt(id, userClients.get(0), pk, msg));
                 }
                 userClients.remove(0);
             }
