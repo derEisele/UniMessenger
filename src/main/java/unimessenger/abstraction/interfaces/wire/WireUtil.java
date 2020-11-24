@@ -6,6 +6,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
+import unimessenger.abstraction.encryption.WireCrypto.Prekey;
+import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
 import unimessenger.abstraction.interfaces.IUtil;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.communication.HTTP;
@@ -14,6 +16,7 @@ import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class WireUtil implements IUtil
 {
@@ -187,29 +190,33 @@ public class WireUtil implements IUtil
 
         JSONObject obj = new JSONObject();
         obj.put("cookie", WireStorage.cookie);
-
+        
+        Prekey keys [] = WireCryptoHandler.generatePreKeys();
+        //TODO: Generate correct last key
+        Prekey lastKey = WireCryptoHandler.generateLastPrekey();
+        
         //TODO: Use working prekeys
         JSONObject lastkey = new JSONObject();
         lastkey.put("key", "pQABARn//wKhAFgg7+EhYE0H+m7FsRt6FCvrTSmrplzvlNhesJhenAscbUADoQChAFggItugmAU3gvKV4+pjlQmJV6DnzbWpY/F0UTYmJqji+C0E9g==");
         lastkey.put("id", 65535);
         obj.put("lastkey", lastkey);
-
+        
         JSONObject sigkeys = new JSONObject();
-        sigkeys.put("enckey", "");
-        sigkeys.put("mackey", "");
+        sigkeys.put("enckey", Base64.getEncoder().encodeToString(new byte[32]));
+        sigkeys.put("mackey", Base64.getEncoder().encodeToString(new byte[32]));
         obj.put("sigkeys", sigkeys);
-
+        
         String pw = Outputs.getStringAnswerFrom("Please enter your password to register this client");
         obj.put("password", pw);
-
+        
         if(persistent) obj.put("type", "permanent");
         else obj.put("type", "temporary");
 
-        //TODO: Use working prekeys
+        //TODO: Use more pre-keys
         JSONArray prekeys = new JSONArray();
         JSONObject key1 = new JSONObject();
-        key1.put("key", "pQABARgYAqEAWCADQw20K/g80LRnGbesNG0x2tqtX0GgE7SvxDg7aWDz4AOhAKEAWCBsGf44CRwNNIm0Z0KLpP7fRCF/WMvsGAkSdNqGquNc9wT2");
-        key1.put("id", 24);
+        key1.put("key", keys[0].getKey());
+        key1.put("id", keys[0].getID());
         prekeys.add(key1);
         obj.put("prekeys", prekeys);
 
@@ -220,7 +227,7 @@ public class WireUtil implements IUtil
         String body = obj.toJSONString();
 
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, body, headers);
-
+        
         if(response == null) Outputs.printError("No response received");
         else if(response.statusCode() == 201)
         {
