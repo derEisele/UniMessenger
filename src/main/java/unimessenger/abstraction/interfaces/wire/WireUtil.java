@@ -190,8 +190,7 @@ public class WireUtil implements IUtil
 
         JSONObject obj = new JSONObject();
         obj.put("cookie", WireStorage.cookie);
-        
-        Prekey keys [] = WireCryptoHandler.generatePreKeys();
+
         //TODO: Generate correct last key
         Prekey lastKey = WireCryptoHandler.generateLastPrekey();
         
@@ -212,13 +211,7 @@ public class WireUtil implements IUtil
         if(persistent) obj.put("type", "permanent");
         else obj.put("type", "temporary");
 
-        //TODO: Use more pre-keys
-        JSONArray prekeys = new JSONArray();
-        JSONObject key1 = new JSONObject();
-        key1.put("key", keys[0].getKey());
-        key1.put("id", keys[0].getID());
-        prekeys.add(key1);
-        obj.put("prekeys", prekeys);
+        obj.put("prekeys", getPreKeys());
 
         obj.put("class", "desktop");
 
@@ -237,5 +230,20 @@ public class WireUtil implements IUtil
             return WireStorage.clientID;
         } else Outputs.printError("Response code is " + response.statusCode());
         return null;
+    }
+    private static JSONArray getPreKeys()
+    {
+        Prekey[] keys = WireCryptoHandler.generatePreKeys(2, 10);
+
+        JSONArray keyList = new JSONArray();
+        for(Prekey key : keys)
+        {
+            JSONObject newKey = new JSONObject();
+            newKey.put("key", key.getKey());
+            newKey.put("id", key.getID());
+            keyList.add(newKey);
+        }
+
+        return keyList;
     }
 }
