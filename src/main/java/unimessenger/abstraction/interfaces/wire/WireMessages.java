@@ -47,6 +47,7 @@ public class WireMessages implements IMessages
 
         obj.put("data", msg);
         obj.put("sender", WireStorage.clientID);
+        obj.put("transient", true);
 
         ArrayList<String> members = new WireData().getConversationMembersFromID(chatID);
         JSONObject recipients = new JSONObject();
