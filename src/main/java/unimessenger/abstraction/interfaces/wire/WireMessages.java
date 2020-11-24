@@ -1,5 +1,7 @@
 package unimessenger.abstraction.interfaces.wire;
 
+import com.wire.bots.cryptobox.CryptoBox;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -17,6 +19,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class WireMessages implements IMessages
 {
@@ -29,7 +32,6 @@ public class WireMessages implements IMessages
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
         String body = buildBody(chatID, text);
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, body, headers);
-
 
         if(response == null) Outputs.printError("No response for sent message");
         else if(response.statusCode() == 201)
@@ -49,6 +51,7 @@ public class WireMessages implements IMessages
         obj.put("sender", WireStorage.clientID);
 
         ArrayList<String> members = new WireData().getConversationMembersFromID(chatID);
+        
         JSONObject recipients = new JSONObject();
 
         for(String id : members)
@@ -99,6 +102,11 @@ public class WireMessages implements IMessages
         } else Outputs.printError("Response code is " + response.statusCode());
 
         return null;
+    }
+    public String DecypherMessage(){
+        String clearText = "";
+
+        return clearText;
     }
 
     @Deprecated
