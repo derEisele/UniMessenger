@@ -51,7 +51,7 @@ public class MenuConversationList
             case 12:
                 Prekey k = WireCryptoHandler.generatePreKeys(2, 4)[4];
                 WireCryptoHandler.generateLastPrekey();
-                System.out.println("ID: "+k.getID()+" Key: " + k.getKey());
+                System.out.println("ID: " + k.getID() + " Key: " + k.getKey());
                 WireCryptoHandler.cleanUp();
                 break;
             case 13:

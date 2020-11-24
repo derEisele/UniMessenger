@@ -1,13 +1,13 @@
 package unimessenger.abstraction.interfaces.wire;
 
-import com.wire.bots.cryptobox.CryptoBox;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
+import unimessenger.abstraction.encryption.WireCrypto.Prekey;
+import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
 import unimessenger.abstraction.interfaces.IMessages;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.communication.HTTP;
@@ -19,7 +19,6 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class WireMessages implements IMessages
 {
@@ -47,12 +46,12 @@ public class WireMessages implements IMessages
     {
         JSONObject obj = new JSONObject();
 
-        obj.put("data", msg);
+        obj.put("data", msg);//TODO: Find out what needs to be in this field
         obj.put("sender", WireStorage.clientID);
         obj.put("transient", true);
 
         ArrayList<String> members = new WireData().getConversationMembersFromID(chatID);
-        
+
         JSONObject recipients = new JSONObject();
 
         for(String id : members)
@@ -63,8 +62,8 @@ public class WireMessages implements IMessages
             {
                 if(!(id.equals(WireStorage.userID) && userClients.get(0).equals(WireStorage.clientID)))
                 {
-                    //TODO: Use correct OTR Content
-                    clientMap.put(userClients.get(0), "OTR Content");
+                    Prekey pk = getPreKeyForClient(id, userClients.get(0));
+                    clientMap.put(userClients.get(0), WireCryptoHandler.encrypt(pk, msg));
                 }
                 userClients.remove(0);
             }
@@ -104,10 +103,31 @@ public class WireMessages implements IMessages
 
         return null;
     }
-    public String DecypherMessage(){
-        String clearText = "";
 
-        return clearText;
+    public static Prekey getPreKeyForClient(String userID, String clientID)
+    {
+        String url = URL.WIRE + URL.WIRE_USERS + "/" + userID + URL.WIRE_PREKEY + "/" + clientID + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String[] headers = new String[]{
+                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+
+        HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
+
+        if(response == null) Outputs.printDebug("Couldn't get a PreKey for a client");
+        else if(response.statusCode() == 200)
+        {
+            try
+            {
+                JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
+                JSONObject key = (JSONObject) new JSONParser().parse(obj.get("prekey").toString());
+                int prekeyID = Integer.parseInt(key.get("id").toString());
+                String prekeyKey = key.get("key").toString();
+                return new Prekey(prekeyID, prekeyKey);
+            } catch(ParseException ignored)
+            {
+                Outputs.printError("Couldn't get a prekey");
+            }
+        } else Outputs.printError("Response code was " + response.statusCode());
+        return null;
     }
 
     @Deprecated
