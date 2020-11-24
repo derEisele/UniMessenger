@@ -34,6 +34,10 @@ public class WireCryptoHandler {
 
     }
 
+    public static void encrypt(Prekey pk, String content){
+        
+    }
+
     public static void cleanUp(){
         CryptoFactory.closeBox();
     }
