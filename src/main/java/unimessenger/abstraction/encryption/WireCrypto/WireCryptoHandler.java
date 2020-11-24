@@ -4,17 +4,14 @@ import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.cryptobox.PreKey;
 
 public class WireCryptoHandler {
-    public static Prekey[] generatePreKeys(){
-        Prekey [] Keys = new Prekey[5];
-        Prekey lastPreKey;
+    public static Prekey[] generatePreKeys(int start, int count){
+        Prekey [] Keys = new Prekey[count];
 
         try {
-            lastPreKey = new Prekey(CryptoFactory.getCryptoInstance().newLastPreKey());
-            PreKey [] keyTemp = CryptoFactory.getCryptoInstance().newPreKeys(1, Keys.length-1);
+            PreKey [] keyTemp = CryptoFactory.getCryptoInstance().newPreKeys(start, count);
             for(int i = 0;i < keyTemp.length; i++){
                 Keys[i] = new Prekey(keyTemp[i]);
             }
-            Keys[Keys.length-1] = lastPreKey;
 
         } catch (CryptoException e) {
             e.printStackTrace();
