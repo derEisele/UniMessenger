@@ -55,9 +55,15 @@ public class MenuChat
 
     private static boolean sendMessage()
     {
-        String text = Outputs.getTextAnswerFrom("");
+        String text = Outputs.getTextAnswerFrom("Please enter the text you would like to send.");
+
+        if(text.equals(""))
+        {
+            System.out.println("No message to send");
+            return true;
+        }
         System.out.println("Sending: " + text);
-        //TODO: Add multi-line support, timed messages and abort option
+        //TODO: Add timed messages
 
         IMessages msg = new APIAccess().getMessageInterface(CLI.currentService);
         return msg.sendMessage(CLI.currentChatID, text);

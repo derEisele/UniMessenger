@@ -78,15 +78,22 @@ public class Outputs
     public static String getTextAnswerFrom(String question)
     {
         System.out.println(question);
-        System.out.print("Input: ");
+        System.out.println("Empty line to finish text input");
 
-        String ret = null;
-        try
+        String ret = "";
+        while(true)
         {
-            ret = rd.readLine();
-        } catch(Exception ignored)
-        {
-            Outputs.printError("Problem with reading a line");
+            String line = "";
+            try
+            {
+                line = rd.readLine();
+            } catch(Exception ignored)
+            {
+                Outputs.printError("Problem with reading a line");
+            }
+            if(line.equals("")) break;
+            ret += System.lineSeparator();
+            ret += line;
         }
 
         return ret;

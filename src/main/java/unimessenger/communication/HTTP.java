@@ -1,4 +1,4 @@
-package unimessenger.apicommunication;
+package unimessenger.communication;
 
 import unimessenger.util.enums.REQUEST;
 

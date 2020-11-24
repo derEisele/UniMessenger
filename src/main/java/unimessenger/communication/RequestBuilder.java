@@ -1,4 +1,4 @@
-package unimessenger.apicommunication;
+package unimessenger.communication;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
