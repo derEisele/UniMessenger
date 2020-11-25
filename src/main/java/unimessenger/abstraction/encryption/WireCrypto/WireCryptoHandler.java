@@ -67,7 +67,6 @@ public class WireCryptoHandler
         {
             Outputs.printError("Encrypting message failed");
         }
-        System.out.println("Cypher: " + Base64.getEncoder().encodeToString(cypher));
         return Base64.getEncoder().encodeToString(cypher);
     }
 
