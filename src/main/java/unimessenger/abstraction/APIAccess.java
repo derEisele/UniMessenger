@@ -20,7 +20,7 @@ public class APIAccess
             case WIRE:
                 return WIRE_CON;
             case TELEGRAM:
-                Outputs.printError("Not implemented yet");
+                Outputs.create("Conversation interface not implemented yet", this.getClass().getName()).always().ERROR().print();
                 return null;
             case NONE:
             default:
@@ -34,7 +34,7 @@ public class APIAccess
             case WIRE:
                 return WIRE_LOGIN;
             case TELEGRAM:
-                Outputs.printError("Login interface not implemented yet");
+                Outputs.create("Login interface not implemented yet", this.getClass().getName()).always().ERROR().print();
                 return null;
             case NONE:
             default:
@@ -48,7 +48,7 @@ public class APIAccess
             case WIRE:
                 return WIRE_MESSAGES;
             case TELEGRAM:
-                Outputs.printError("Messages interface not implemented yet");
+                Outputs.create("Messages interface not implemented yet", this.getClass().getName()).always().ERROR().print();
                 return null;
             case NONE:
             default:
@@ -62,7 +62,7 @@ public class APIAccess
             case WIRE:
                 return WIRE_UTIL;
             case TELEGRAM:
-                Outputs.printError("Util interface not implemented yet");
+                Outputs.create("Util interface not implemented yet", this.getClass().getName()).always().ERROR().print();
                 return null;
             case NONE:
             default:
@@ -76,7 +76,7 @@ public class APIAccess
             case WIRE:
                 return WIRE_DATA;
             case TELEGRAM:
-                Outputs.printError("Data interface not implemented yet");
+                Outputs.create("Data interface not implemented yet", this.getClass().getName()).always().ERROR().print();
                 return null;
             case NONE:
             default:

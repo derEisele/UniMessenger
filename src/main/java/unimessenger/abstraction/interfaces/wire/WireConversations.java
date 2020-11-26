@@ -10,7 +10,7 @@ import unimessenger.abstraction.interfaces.IConversations;
 import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
 import unimessenger.abstraction.storage.MessengerStructure.WirePerson;
 import unimessenger.abstraction.storage.WireStorage;
-import unimessenger.apicommunication.HTTP;
+import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.REQUEST;
 
@@ -29,7 +29,7 @@ public class WireConversations implements IConversations
 
         if(response == null)
         {
-            Outputs.printError("Couldn't get a HTTP response");
+            Outputs.create("Could not get a HTTP response", this.getClass().getName()).debug().WARNING().print();
             return false;
         } else if(response.statusCode() == 200)
         {
@@ -44,20 +44,21 @@ public class WireConversations implements IConversations
                 JSONArray conArr = (JSONArray) obj.get("conversations");
                 for(Object o : conArr)
                 {
-                    newConList.add(getConversation((JSONObject) new JSONParser().parse(o.toString())));
+                    WireConversation con = getConversation((JSONObject) new JSONParser().parse(o.toString()));
+                    if(con.conversationName != null) newConList.add(con);
                 }
 
                 WireStorage.conversations = newConList;
-                Outputs.printDebug("Successfully reloaded all conversations");
+                Outputs.create("Successfully reloaded all conversations").verbose().INFO().print();
                 return true;
             } catch(ParseException ignored)
             {
             }
-            Outputs.printDebug("Failed to reload all conversations");
+            Outputs.create("Failed to reload all conversations", this.getClass().getName()).debug().WARNING().print();
             return false;
         } else
         {
-            Outputs.printDebug("Response code is not 200");
+            Outputs.create("Response code is " + response.statusCode(), this.getClass().getName()).debug().WARNING().print();
             return false;
         }
     }
@@ -82,7 +83,7 @@ public class WireConversations implements IConversations
         if(conObj.get("name") != null) con.conversationName = conObj.get("name").toString();
         if(conObj.get("team") != null) con.team = conObj.get("team").toString();
         con.id = conObj.get("id").toString();
-        con.conversationType = Integer.parseInt(conObj.get("type").toString());
+        con.setConversationType(Integer.parseInt(conObj.get("type").toString()));
         if(conObj.get("receipt_mode") != null) con.receipt_mode = conObj.get("receipt_mode").toString();
         con.last_event_time = conObj.get("last_event_time").toString();
         if(conObj.get("message_timer") != null) con.message_timer = conObj.get("message_timer").toString();

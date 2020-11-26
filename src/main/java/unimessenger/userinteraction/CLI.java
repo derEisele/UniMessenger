@@ -51,20 +51,20 @@ public class CLI implements Runnable
                     MenuChat.showMenu();
                     break;
                 default:
-                    Outputs.printError("Unknown menu state");
-                    Outputs.printDebug("Switching to main menu...");
+                    Outputs.create("Unknown menu state", "CLI").debug().ERROR().print();
+                    Outputs.create("Switching to main menu", "CLI").debug().verbose().WARNING().print();
                     currentMenu = MENU.MAIN;
                     break;
             }
         }
-        Outputs.printDebug("Stopping update thread...");
+        Outputs.create("Stopping update thread...").verbose().INFO().print();
         Main.updt.interrupt();
-        Outputs.printDebug("Update thread stopped");
+        Outputs.create("Update thread stopped").verbose().INFO().print();
 
-        Outputs.printDebug("Writing data to file...");
+        Outputs.create("Writing data to file...").verbose().INFO().print();
         WireStorage.saveDataInFile();
-        Outputs.printDebug("Storage written to file");
+        Outputs.create("Storage written to file").verbose().INFO().print();
 
-        Outputs.printInfo("Exiting program...");
+        Outputs.create("Exiting program...").verbose().INFO().print();
     }
 }

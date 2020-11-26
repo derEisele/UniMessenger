@@ -20,16 +20,20 @@ public class WireData implements IData
             ids.add(con.id);
         }
 
-        Outputs.printDebug("Returning " + ids.size() + " Conversation IDs");
+        Outputs.create("Returning" + ids.size() + " conversation IDs").verbose().INFO().print();
         return ids;
     }
 
     @Override
     public String getConversationNameFromID(String id)
     {
-        for(int i = 0; i < WireStorage.conversations.size(); i++)
+        for(WireConversation con : WireStorage.conversations)
         {
-            if(WireStorage.conversations.get(i).id.equals(id)) return WireStorage.conversations.get(i).conversationName;
+            if(con.id.equals(id))
+            {
+                //TODO: Return name of chat partner if conversation type is NORMAL
+                return con.conversationName;
+            }
         }
         return null;
     }

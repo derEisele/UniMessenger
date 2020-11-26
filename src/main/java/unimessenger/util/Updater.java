@@ -57,7 +57,7 @@ public class Updater implements Runnable
                 return login.login();
             case NONE:
             default:
-                Outputs.printError("Unknown service: " + service);
+                Outputs.create("Unknown service: " + service, this.getClass().getName()).debug().ERROR().print();
                 break;
         }
         return true;

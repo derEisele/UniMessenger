@@ -1,16 +1,16 @@
 package unimessenger.abstraction.interfaces.wire;
 
-import com.wire.bots.cryptobox.CryptoBox;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
+import unimessenger.abstraction.encryption.WireCrypto.Prekey;
+import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
 import unimessenger.abstraction.interfaces.IMessages;
 import unimessenger.abstraction.storage.WireStorage;
-import unimessenger.apicommunication.HTTP;
+import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.REQUEST;
 
@@ -33,13 +33,12 @@ public class WireMessages implements IMessages
         String body = buildBody(chatID, text);
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, body, headers);
 
-        if(response == null) Outputs.printError("No response for sent message");
+        if(response == null) Outputs.create("No response for sent message received", this.getClass().getName()).debug().WARNING().print();
         else if(response.statusCode() == 201)
         {
-            Outputs.printInfo("Message sent correctly");
+            Outputs.create("Message sent correctly").verbose().INFO().print();
             return true;
-        } else Outputs.printError("Response code was " + response.statusCode());
-
+        } else Outputs.create("Response code was " + response.statusCode(), this.getClass().getName()).debug().WARNING().print();
         return false;
     }
 
@@ -47,25 +46,29 @@ public class WireMessages implements IMessages
     {
         JSONObject obj = new JSONObject();
 
-        obj.put("data", msg);
+        obj.put("data", msg);//TODO: Find out what needs to be in this field
         obj.put("sender", WireStorage.clientID);
+        obj.put("transient", true);
 
         ArrayList<String> members = new WireData().getConversationMembersFromID(chatID);
-        
+
         JSONObject recipients = new JSONObject();
 
         for(String id : members)
         {
             Map<String, Constable> clientMap = new LinkedHashMap<>(members.size());
             ArrayList<String> userClients = getClientIDsFromUser(id);
-            while(!userClients.isEmpty())
+            if(userClients != null)
             {
-                if(!(id.equals(WireStorage.userID) && userClients.get(0).equals(WireStorage.clientID)))
+                while(!userClients.isEmpty())
                 {
-                    //TODO: Use correct OTR Content
-                    clientMap.put(userClients.get(0), "OTR Content");
+                    if(!(id.equals(WireStorage.userID) && userClients.get(0).equals(WireStorage.clientID)))
+                    {
+                        Prekey pk = getPreKeyForClient(id, userClients.get(0));
+                        clientMap.put(userClients.get(0), WireCryptoHandler.encrypt(id, userClients.get(0), pk, msg));
+                    }
+                    userClients.remove(0);
                 }
-                userClients.remove(0);
             }
             recipients.put(id, clientMap);
         }
@@ -82,7 +85,7 @@ public class WireMessages implements IMessages
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
-        if(response == null) Outputs.printDebug("No client response");
+        if(response == null) Outputs.create("No client response", "WireMessages").debug().WARNING().print();
         else if(response.statusCode() == 200)
         {
             try
@@ -99,14 +102,35 @@ public class WireMessages implements IMessages
             } catch(ParseException ignored)
             {
             }
-        } else Outputs.printError("Response code is " + response.statusCode());
+        } else Outputs.create("Response code is " + response.statusCode(), "WireMessages").debug().WARNING().print();
 
         return null;
     }
-    public String DecypherMessage(){
-        String clearText = "";
 
-        return clearText;
+    public static Prekey getPreKeyForClient(String userID, String clientID)
+    {
+        String url = URL.WIRE + URL.WIRE_USERS + "/" + userID + URL.WIRE_PREKEY + "/" + clientID + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String[] headers = new String[]{
+                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+
+        HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
+
+        if(response == null) Outputs.create("Could not get a prekey for a client", "WireMessages").debug().WARNING().print();
+        else if(response.statusCode() == 200)
+        {
+            try
+            {
+                JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
+                JSONObject key = (JSONObject) new JSONParser().parse(obj.get("prekey").toString());
+                int prekeyID = Integer.parseInt(key.get("id").toString());
+                String prekeyKey = key.get("key").toString();
+                return new Prekey(prekeyID, prekeyKey);
+            } catch(ParseException ignored)
+            {
+                Outputs.create("Could not get a prekey", "WireMessages").debug().WARNING().print();
+            }
+        } else Outputs.create("Response code was " + response.statusCode(), "WireMessages").debug().WARNING().print();
+        return null;
     }
 
     @Deprecated
@@ -122,5 +146,32 @@ public class WireMessages implements IMessages
         System.out.println("Response code: " + response.statusCode());
         System.out.println("Headers:" + response.headers());
         System.out.println("Body: " + response.body());
+        //TODO MAKE WORK!!!
+        try {
+            JSONObject temp = (JSONObject) new JSONParser().parse(response.body());
+
+            String pl = temp.get("payload").toString();
+
+            System.out.println("PayLoad: " + pl);
+
+            JSONArray payLArr = (JSONArray) new JSONParser().parse(pl);
+
+            JSONObject payL = (JSONObject) new JSONParser().parse(payLArr.get(0).toString());
+
+            System.out.println("From: "+ payL.get("from").toString());
+
+            JSONObject data = (JSONObject) new JSONParser().parse(payL.get("data").toString());
+
+            System.out.println("Text: "+ data.get("text"));
+            System.out.println("Sender: "+ data.get("sender"));
+
+            String ret = WireCryptoHandler.decrypt(UUID.fromString(payL.get("from").toString()), data.get("sender").toString(), data.get("text").toString());
+
+            System.out.println("TextInGut: " + ret);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 }

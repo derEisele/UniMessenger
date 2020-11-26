@@ -23,29 +23,29 @@ public class Main
         if(arguments.contains("-d")) debug = true;
         if(arguments.contains("-v")) verbose = true;
 
-        Outputs.printInfo("Uni-Messenger starting...");
-        Outputs.printDebug("Loading login files...");
+        Outputs.create("Uni-Messenger starting...").verbose().INFO().print();
+        Outputs.create("Loading login files...").verbose().INFO().print();
         WireStorage.readDataFromFiles();
-        Outputs.printDebug("Login files loaded");
+        Outputs.create("File-loading finished").verbose().INFO().print();
 
-        Outputs.printDebug("Loading stored messages...");
-        Outputs.printError("Missing function");//TODO: Load files with previously saved messages of all messengers
-        Outputs.printDebug("Stored messages loaded");
+        Outputs.create("Loading stored messages...").verbose().INFO().print();
+        Outputs.create("Missing function", "Main").always().ERROR().print();//TODO: Load files with previously saved messages of all messengers
+        Outputs.create("Message loading finished").verbose().INFO().print();
 
-        Outputs.printDebug("Creating new Thread for Updater");
+        Outputs.create("Creating new thread for updater").verbose().INFO().print();
         updt = new Thread(new Updater());
-        Outputs.printDebug("Updater Thread created");
-        Outputs.printDebug("Starting Updater Thread");
+        Outputs.create("Updater thread created").verbose().INFO().print();
+        Outputs.create("Starting updater thread").verbose().INFO().print();
         updt.start();
-        Outputs.printDebug("Updater started");
+        Outputs.create("Updater thread started").verbose().INFO().print();
 
-        Outputs.printDebug("Creating new Thread for CLI...");
+        Outputs.create("Creating new Thread for CLI").verbose().INFO().print();
         cli = new Thread(new CLI());
-        Outputs.printDebug("CLI Thread created");
-        Outputs.printDebug("Starting CLI Thread...");
+        Outputs.create("CLI thread created").verbose().INFO().print();
+        Outputs.create("Starting CLI thread").verbose().INFO().print();
         cli.start();
-        Outputs.printDebug("CLI started");
+        Outputs.create("CLI thread started").verbose().INFO().print();
 
-        Outputs.printInfo("Uni-Messenger started");
+        Outputs.create("Uni-Messenger started").verbose().INFO().print();
     }
 }

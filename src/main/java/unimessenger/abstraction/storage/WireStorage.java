@@ -42,10 +42,10 @@ public class WireStorage
                 FileWriter fw = new FileWriter(storageFile);
                 fw.write(obj.toJSONString());
                 fw.close();
-                Outputs.printDebug("Successfully wrote to Wire file");
+                Outputs.create("Successfully wrote to Wire file").verbose().INFO().print();
             } catch(IOException ignored)
             {
-                Outputs.printError("Couldn't write to Wire file");
+                Outputs.create("Could not write to Wire file", "WireStorage").debug().WARNING().print();
             }
         }
     }
@@ -90,7 +90,7 @@ public class WireStorage
             clientID = obj.get("clientID").toString();
         } catch(Exception ignored)
         {
-            Outputs.printError("Failed to load Wire file");
+            Outputs.create("Failed to load Wire file", "WireStorage").debug().WARNING().print();
         }
     }
 
@@ -101,10 +101,10 @@ public class WireStorage
             FileWriter fw = new FileWriter(storageFile);
             fw.write("{}");
             fw.close();
-            Outputs.printDebug("Successfully cleared Wire file");
+            Outputs.create("Successfully cleared Wire file").verbose().INFO().print();
         } catch(IOException ignored)
         {
-            Outputs.printError("Couldn't clear Wire file");
+            Outputs.create("Could not clear Wire file", "Wire Storage").debug().WARNING().print();
         }
     }
 }
