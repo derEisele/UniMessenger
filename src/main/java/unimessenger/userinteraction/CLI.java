@@ -2,6 +2,7 @@ package unimessenger.userinteraction;
 
 import unimessenger.Main;
 import unimessenger.abstraction.APIAccess;
+import unimessenger.abstraction.encryption.WireCrypto.CryptoFactory;
 import unimessenger.abstraction.interfaces.IData;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.userinteraction.menu.MenuChat;
@@ -51,20 +52,25 @@ public class CLI implements Runnable
                     MenuChat.showMenu();
                     break;
                 default:
-                    Outputs.printError("Unknown menu state");
-                    Outputs.printDebug("Switching to main menu...");
+                    Outputs.create("Unknown menu state", "CLI").debug().ERROR().print();
+                    Outputs.create("Switching to main menu", "CLI").debug().verbose().WARNING().print();
                     currentMenu = MENU.MAIN;
                     break;
             }
         }
-        Outputs.printDebug("Stopping update thread...");
+        Outputs.create("Stopping update thread...").verbose().INFO().print();
         Main.updt.interrupt();
-        Outputs.printDebug("Update thread stopped");
+        Outputs.create("Update thread stopped").verbose().INFO().print();
 
-        Outputs.printDebug("Writing data to file...");
+        Outputs.create("Writing data to file...").verbose().INFO().print();
         WireStorage.saveDataInFile();
-        Outputs.printDebug("Storage written to file");
+        Outputs.create("Storage written to file").verbose().INFO().print();
 
-        Outputs.printInfo("Exiting program...");
+        //TODO make sure this is executed every time the Program is closed no matter where
+        Outputs.create("Cleaning the Box").verbose().INFO().print();
+        CryptoFactory.closeBox();
+        Outputs.create("Box Clean").verbose().INFO().print();
+
+        Outputs.create("Exiting program...").verbose().INFO().print();
     }
 }

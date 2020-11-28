@@ -1,4 +1,4 @@
-package unimessenger.apicommunication;
+package unimessenger.communication;
 
 import unimessenger.util.enums.REQUEST;
 
@@ -25,6 +25,9 @@ public class HTTP
                 break;
             case POST:
                 request = RequestBuilder.getPOSTRequest(url, body, headers);
+                break;
+            case DELETE:
+                request = RequestBuilder.getDELETERequest(url, body, headers);
                 break;
             default:
                 break;

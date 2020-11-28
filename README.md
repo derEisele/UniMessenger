@@ -32,3 +32,15 @@ Planned messengers are Wire, Telegram and WhatsApp, with the priority on Wire.
 
 #### APIs
 - [Test API](https://jsonplaceholder.typicode.com/)
+
+### Used Sources
+- [Wire REST API Documentation](https://docs.wire.com/understand/api-client-perspective/authentication.html)
+- [Wire Whitepaper](https://wire-docs.wire.com/download/Wire+Security+Whitepaper.pdf)
+- [Projects from the Wire Developers on GitHub](https://github.com/wireapp)
+- [List of Operations](https://staging-nginz-https.zinfra.io/swagger-ui/)
+- [HTTPClient YT Tutorial](https://www.youtube.com/watch?v=5MmlRZZxTqk&ab_channel=DanVega)
+- [Simple HTTP Connection](https://www.baeldung.com/java-9-http-client)
+- [JSONParser](https://www.geeksforgeeks.org/parse-json-java/)
+- [Test API](https://jsonplaceholder.typicode.com/)
+- [StackOverflow](https://stackoverflow.com/)
+- [Baeldung](https://www.baeldung.com/)

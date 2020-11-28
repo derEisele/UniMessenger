@@ -8,8 +8,9 @@ import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
 import unimessenger.abstraction.interfaces.ILoginOut;
 import unimessenger.abstraction.storage.WireStorage;
-import unimessenger.apicommunication.HTTP;
+import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.CLI;
+import unimessenger.userinteraction.Inputs;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.Updater;
 import unimessenger.util.enums.MENU;
@@ -27,7 +28,7 @@ public class MenuLogin
         System.out.println("3) Exit Program");
         System.out.println("10) AutoLogin");//TODO: Remove
 
-        int userInput = Outputs.getIntAnswerFrom("Please enter the number of the option you would like to choose.");
+        int userInput = Inputs.getIntAnswerFrom("Please enter the number of the option you would like to choose.");
         switch(userInput)
         {
             case 1:
@@ -50,7 +51,7 @@ public class MenuLogin
                 CLI.currentMenu = MENU.CONVERSATION_LIST;
                 break;
             default:
-                Outputs.cannotHandleUserInput();
+                Outputs.create("Invalid option").always().WARNING().print();
                 break;
         }
     }
@@ -61,11 +62,12 @@ public class MenuLogin
         ILoginOut login = access.getLoginInterface(CLI.currentService);
         boolean loggedIn = false;
 
-        if(login.checkIfLoggedIn() && access.getUtilInterface(CLI.currentService).refreshSession()) loggedIn = true;
+        if(login.checkIfLoggedIn()) loggedIn = true;
+        else if(WireStorage.getBearerToken() != null && access.getUtilInterface(CLI.currentService).refreshSession()) loggedIn = true;
         else if(login.login()) loggedIn = true;
         if(loggedIn)
         {
-            if(!access.getUtilInterface(CLI.currentService).loadProfile()) Outputs.printError("Couldn't load profile");
+            if(!access.getUtilInterface(CLI.currentService).loadProfile()) Outputs.create("Could not load profile", "MenuLogin").verbose().debug().ERROR().print();
             return true;
         } else
         {
@@ -90,6 +92,8 @@ public class MenuLogin
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
         handleResponse(new HTTP().sendRequest(url, REQUEST.POST, body, headers));
+
+        WireStorage.saveDataInFile();
     }
 
     @Deprecated
@@ -109,11 +113,11 @@ public class MenuLogin
             if(arr.length > 1) arr = arr[1].split(";");
             WireStorage.cookie = "zuid=" + arr[0];
 
-            Outputs.printDebug("Token Type: " + obj.get("token_type"));
-            Outputs.printDebug("Expires in: " + obj.get("expires_in"));
-            Outputs.printDebug("Access Token: " + WireStorage.getBearerToken());
-            Outputs.printDebug("User: " + WireStorage.userID);
-            Outputs.printDebug("Cookie: " + WireStorage.cookie);
+            Outputs.create("Token Type: " + obj.get("token_type")).verbose().print();
+            Outputs.create("Expires in: " + obj.get("expires_in")).verbose().print();
+            Outputs.create("Access Token: " + WireStorage.getBearerToken()).verbose().print();
+            Outputs.create("User: " + WireStorage.userID).verbose().print();
+            Outputs.create("Cookie: " + WireStorage.cookie).verbose().print();
         } catch(ParseException ignored)
         {
         }

@@ -4,5 +4,6 @@ public enum REQUEST
 {
     GET,
     POST,
-    PUT
+    PUT,
+    DELETE
 }

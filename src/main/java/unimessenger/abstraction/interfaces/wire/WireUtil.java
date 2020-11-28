@@ -6,21 +6,25 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
+import unimessenger.abstraction.encryption.WireCrypto.Prekey;
+import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
 import unimessenger.abstraction.interfaces.IUtil;
 import unimessenger.abstraction.storage.WireStorage;
-import unimessenger.apicommunication.HTTP;
+import unimessenger.communication.HTTP;
+import unimessenger.userinteraction.Inputs;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class WireUtil implements IUtil
 {
     @Override
     public boolean refreshSession()
     {
-        String url = URL.WIRE + URL.WIRE_ACCESS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_ACCESS + URL.wireBearerToken();
         String[] headers = new String[]{
                 "cookie", WireStorage.cookie,
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
@@ -28,10 +32,8 @@ public class WireUtil implements IUtil
 
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, "", headers);
 
-        if(response == null)
-        {
-            Outputs.printError("Couldn't get a HTTP response");
-        } else if(response.statusCode() == 200)
+        if(response == null) Outputs.create("Could not get a HTTP response", this.getClass().getName()).debug().WARNING().print();
+        else if(response.statusCode() == 200)
         {
             JSONObject obj;
             try
@@ -40,15 +42,15 @@ public class WireUtil implements IUtil
                 obj = (JSONObject) new JSONParser().parse(response.body());
                 WireStorage.setBearerToken(obj.get("access_token").toString(), Integer.parseInt(obj.get("expires_in").toString()));
                 WireStorage.userID = obj.get("user").toString();
-                Outputs.printDebug("Successfully refreshed token");
+                Outputs.create("Successfully refreshed token").verbose().INFO().print();
                 return true;
             } catch(ParseException ignored)
             {
-                Outputs.printError("Failed refreshing token");
+                Outputs.create("Refreshing token failed", this.getClass().getName()).debug().WARNING().print();
             }
         } else
         {
-            Outputs.printDebug("Response code is " + response.statusCode() + ". Deleting Wire access cookie...");
+            Outputs.create("Response code is " + response.statusCode() + ". Deleting Wire access cookie...", this.getClass().getName()).debug().ERROR().print();
             WireStorage.cookie = null;
             WireStorage.clearFile();
         }
@@ -58,14 +60,14 @@ public class WireUtil implements IUtil
     @Override
     public boolean loadProfile()
     {
-        String url = URL.WIRE + URL.WIRE_SELF + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_SELF + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
-        if(response == null) Outputs.printError("No response received");
+        if(response == null) Outputs.create("No response received", this.getClass().getName()).debug().WARNING().print();
         else if(response.statusCode() == 200)
         {
             try
@@ -88,9 +90,9 @@ public class WireUtil implements IUtil
                 return true;
             } catch(ParseException ignored)
             {
-                Outputs.printError("Json parsing error");
+                Outputs.create("Json parsing error. Data not saved in file", this.getClass().getName()).debug().WARNING().print();
             }
-        } else Outputs.printError("Http response was " + response.statusCode());
+        } else Outputs.create("Response code was " + response.statusCode(), this.getClass().getName()).debug().WARNING().print();
 
         return false;
     }
@@ -129,7 +131,7 @@ public class WireUtil implements IUtil
     }
     private static ArrayList<String> getAllClientIDs() throws ParseException
     {
-        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
@@ -137,7 +139,7 @@ public class WireUtil implements IUtil
 
         if(response == null)
         {
-            Outputs.printError("No response received");
+            Outputs.create("No response received", "WireUtil").debug().WARNING().print();
             return null;
         } else if(response.statusCode() == 200)
         {
@@ -150,19 +152,19 @@ public class WireUtil implements IUtil
                 clients.remove(0);
             }
             return ids;
-        } else Outputs.printError("Response code is " + response.statusCode());
+        } else Outputs.create("Response code is " + response.statusCode(), "WireUtil").debug().WARNING().print();
 
         return null;
     }
     private static boolean compareCookie(String clientID) throws ParseException
     {
-        String url = URL.WIRE + URL.WIRE_CLIENTS + "/" + clientID + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_CLIENTS + "/" + clientID + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
-        if(response == null) Outputs.printError("No response received");
+        if(response == null) Outputs.create("No response received", "WireUtil").debug().WARNING().print();
         else if(response.statusCode() == 200)
         {
             JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
@@ -170,17 +172,17 @@ public class WireUtil implements IUtil
             {
                 if(obj.get("cookie").toString().equals(WireStorage.cookie))
                 {
-                    Outputs.printDebug("Client ID found");
+                    Outputs.create("Client ID found").verbose().INFO().print();
                     return true;
                 }
-            } else Outputs.printDebug("Client response didn't contain a cookie");
-        } else Outputs.printError("Response code is " + response.statusCode());
+            } else Outputs.create("Client response contained no cookie", "WireUtil").debug().INFO().print();
+        } else Outputs.create("Response code is " + response.statusCode(), "WireUtil").debug().WARNING().print();
 
         return false;
     }
     private static String registerClient(boolean persistent) throws ParseException
     {
-        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
@@ -188,30 +190,26 @@ public class WireUtil implements IUtil
         JSONObject obj = new JSONObject();
         obj.put("cookie", WireStorage.cookie);
 
-        //TODO: Use working prekeys
+        Prekey lastKey = WireCryptoHandler.generateLastPrekey();
+
         JSONObject lastkey = new JSONObject();
-        lastkey.put("key", "pQABARn//wKhAFgg7+EhYE0H+m7FsRt6FCvrTSmrplzvlNhesJhenAscbUADoQChAFggItugmAU3gvKV4+pjlQmJV6DnzbWpY/F0UTYmJqji+C0E9g==");
-        lastkey.put("id", 65535);
+        lastkey.put("key", lastKey.getKey());
+        lastkey.put("id", lastKey.getID());
         obj.put("lastkey", lastkey);
 
+        //TODO: Find out if enckey and mackey are correct
         JSONObject sigkeys = new JSONObject();
-        sigkeys.put("enckey", "");
-        sigkeys.put("mackey", "");
+        sigkeys.put("enckey", Base64.getEncoder().encodeToString(new byte[32]));
+        sigkeys.put("mackey", Base64.getEncoder().encodeToString(new byte[32]));
         obj.put("sigkeys", sigkeys);
-
-        String pw = Outputs.getStringAnswerFrom("Please enter your password to register this client");
+        
+        String pw = Inputs.getStringAnswerFrom("Please enter your password to register this client");
         obj.put("password", pw);
-
+        
         if(persistent) obj.put("type", "permanent");
         else obj.put("type", "temporary");
 
-        //TODO: Use working prekeys
-        JSONArray prekeys = new JSONArray();
-        JSONObject key1 = new JSONObject();
-        key1.put("key", "pQABARgYAqEAWCADQw20K/g80LRnGbesNG0x2tqtX0GgE7SvxDg7aWDz4AOhAKEAWCBsGf44CRwNNIm0Z0KLpP7fRCF/WMvsGAkSdNqGquNc9wT2");
-        key1.put("id", 24);
-        prekeys.add(key1);
-        obj.put("prekeys", prekeys);
+        obj.put("prekeys", getPreKeys());
 
         obj.put("class", "desktop");
 
@@ -220,15 +218,30 @@ public class WireUtil implements IUtil
         String body = obj.toJSONString();
 
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, body, headers);
-
-        if(response == null) Outputs.printError("No response received");
+        
+        if(response == null) Outputs.create("No response received", "WireUtil").debug().WARNING().print();
         else if(response.statusCode() == 201)
         {
             JSONObject resObj = (JSONObject) new JSONParser().parse(response.body());
             WireStorage.clientID = resObj.get("id").toString();
-            Outputs.printDebug("Client ID stored");
+            Outputs.create("Client ID stored").verbose().INFO().print();
             return WireStorage.clientID;
-        } else Outputs.printError("Response code is " + response.statusCode());
+        } else Outputs.create("Response code is " + response.statusCode(), "WireUtil").debug().WARNING().print();
         return null;
+    }
+    private static JSONArray getPreKeys()
+    {
+        Prekey[] keys = WireCryptoHandler.generatePreKeys(0, 50);
+
+        JSONArray keyList = new JSONArray();
+        for(Prekey key : keys)
+        {
+            JSONObject newKey = new JSONObject();
+            newKey.put("key", key.getKey());
+            newKey.put("id", key.getID());
+            keyList.add(newKey);
+        }
+
+        return keyList;
     }
 }

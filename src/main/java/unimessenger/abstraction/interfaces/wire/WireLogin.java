@@ -7,7 +7,8 @@ import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
 import unimessenger.abstraction.interfaces.ILoginOut;
 import unimessenger.abstraction.storage.WireStorage;
-import unimessenger.apicommunication.HTTP;
+import unimessenger.communication.HTTP;
+import unimessenger.userinteraction.Inputs;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.REQUEST;
 
@@ -18,17 +19,27 @@ public class WireLogin implements ILoginOut
     @Override
     public boolean checkIfLoggedIn()
     {
-        if(WireStorage.cookie == null) return false;
-        return WireStorage.isBearerTokenStillValid();
+        if(WireStorage.cookie == null)
+        {
+            Outputs.create("No cookie stored").verbose().INFO().print();
+            return false;
+        }
+        if(WireStorage.isBearerTokenStillValid())
+        {
+            Outputs.create("Bearer token is valid").verbose().INFO().print();
+            return true;
+        }
+        Outputs.create("Bearer token not valid", this.getClass().getName()).debug().INFO().print();
+        return false;
     }
 
     @Override
     public boolean login()
     {
         //TODO: Add more login options (phone)
-        String mail = Outputs.getStringAnswerFrom("Please enter your E-Mail");//TestAccount: pechtl97@gmail.com
-        String pw = Outputs.getStringAnswerFrom("Please enter your password");//TestAccount: Passwort1!
-        WireStorage.persistent = Outputs.getBoolAnswerFrom("Do you want to stay logged in?");
+        String mail = Inputs.getStringAnswerFrom("Please enter your E-Mail");//TestAccount: pechtl97@gmail.com
+        String pw = Inputs.getStringAnswerFrom("Please enter your password");//TestAccount: Passwort1!
+        WireStorage.persistent = Inputs.getBoolAnswerFrom("Do you want to stay logged in?");
 
         String url = URL.WIRE + URL.WIRE_LOGIN;
         if(WireStorage.persistent) url += URL.WIRE_PERSIST;
@@ -48,7 +59,7 @@ public class WireLogin implements ILoginOut
     @Override
     public boolean logout()
     {
-        String url = URL.WIRE + URL.WIRE_LOGOUT + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_LOGOUT + URL.wireBearerToken();
         String[] headers = new String[]{
                 "cookie", WireStorage.cookie,
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
@@ -58,16 +69,16 @@ public class WireLogin implements ILoginOut
 
         if(response == null)
         {
-            Outputs.printError("Couldn't get a HTTP response");
+            Outputs.create("Could not get a HTTP response", this.getClass().getName()).debug().WARNING().print();
             return false;
         } else if(response.statusCode() == 200)
         {
-            Outputs.printDebug("Successfully logged out");
+            Outputs.create("Successfully logged out").verbose().INFO().print();
             WireStorage.clearUserData();
             return true;
         } else
         {
-            Outputs.printDebug("Response code is not 200");
+            Outputs.create("Response code is " + response.statusCode(), this.getClass().getName()).debug().WARNING().print();
             return false;
         }
     }
@@ -95,8 +106,8 @@ public class WireLogin implements ILoginOut
             if(arr.length > 1) arr = arr[1].split(";");
             WireStorage.cookie = "zuid=" + arr[0];
 
-            Outputs.printDebug("User: " + WireStorage.userID);
-            Outputs.printDebug("Expires in: " + obj.get("expires_in") + " seconds");
+            Outputs.create("User: " + WireStorage.userID).verbose().INFO().print();
+            Outputs.create("Expires in: " + obj.get("expires_in") + " seconds").verbose().INFO().print();
         } catch(ParseException ignored)
         {
             return false;
