@@ -62,7 +62,8 @@ public class MenuLogin
         ILoginOut login = access.getLoginInterface(CLI.currentService);
         boolean loggedIn = false;
 
-        if(login.checkIfLoggedIn() && access.getUtilInterface(CLI.currentService).refreshSession()) loggedIn = true;
+        if(login.checkIfLoggedIn()) loggedIn = true;
+        else if(WireStorage.getBearerToken() != null && access.getUtilInterface(CLI.currentService).refreshSession()) loggedIn = true;
         else if(login.login()) loggedIn = true;
         if(loggedIn)
         {

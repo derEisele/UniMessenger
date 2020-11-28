@@ -1,0 +1,18 @@
+{
+  "payload": [
+    {
+      "type": "user.activate",
+      "user": {
+        "assets": [],
+        "managed_by": "wire",
+        "name": "SysAdminTestFelix",
+        "accent_id": 4,
+        "id": "12905427-01dd-4a98-8e5d-b75adc91b44e",
+        "locale": "de-DE",
+        "email": "pechtl97@gmail.com",
+        "picture": []
+      }
+    }
+  ],
+  "id": "92584472-26bb-11eb-8022-22000b10825b"
+}

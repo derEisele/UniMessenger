@@ -2,6 +2,7 @@ package unimessenger.userinteraction;
 
 import unimessenger.Main;
 import unimessenger.abstraction.APIAccess;
+import unimessenger.abstraction.encryption.WireCrypto.CryptoFactory;
 import unimessenger.abstraction.interfaces.IData;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.userinteraction.menu.MenuChat;
@@ -64,6 +65,11 @@ public class CLI implements Runnable
         Outputs.create("Writing data to file...").verbose().INFO().print();
         WireStorage.saveDataInFile();
         Outputs.create("Storage written to file").verbose().INFO().print();
+
+        //TODO make sure this is executed every time the Program is closed no matter where
+        Outputs.create("Cleaning the Box").verbose().INFO().print();
+        CryptoFactory.closeBox();
+        Outputs.create("Box Clean").verbose().INFO().print();
 
         Outputs.create("Exiting program...").verbose().INFO().print();
     }

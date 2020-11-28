@@ -24,7 +24,7 @@ public class WireUtil implements IUtil
     @Override
     public boolean refreshSession()
     {
-        String url = URL.WIRE + URL.WIRE_ACCESS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_ACCESS + URL.wireBearerToken();
         String[] headers = new String[]{
                 "cookie", WireStorage.cookie,
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
@@ -60,7 +60,7 @@ public class WireUtil implements IUtil
     @Override
     public boolean loadProfile()
     {
-        String url = URL.WIRE + URL.WIRE_SELF + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_SELF + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
@@ -131,7 +131,7 @@ public class WireUtil implements IUtil
     }
     private static ArrayList<String> getAllClientIDs() throws ParseException
     {
-        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
@@ -158,7 +158,7 @@ public class WireUtil implements IUtil
     }
     private static boolean compareCookie(String clientID) throws ParseException
     {
-        String url = URL.WIRE + URL.WIRE_CLIENTS + "/" + clientID + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_CLIENTS + "/" + clientID + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
 
@@ -182,7 +182,7 @@ public class WireUtil implements IUtil
     }
     private static String registerClient(boolean persistent) throws ParseException
     {
-        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_CLIENTS + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
@@ -231,7 +231,7 @@ public class WireUtil implements IUtil
     }
     private static JSONArray getPreKeys()
     {
-        Prekey[] keys = WireCryptoHandler.generatePreKeys(2, 50);
+        Prekey[] keys = WireCryptoHandler.generatePreKeys(0, 50);
 
         JSONArray keyList = new JSONArray();
         for(Prekey key : keys)

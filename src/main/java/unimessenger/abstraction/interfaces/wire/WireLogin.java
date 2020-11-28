@@ -19,8 +19,18 @@ public class WireLogin implements ILoginOut
     @Override
     public boolean checkIfLoggedIn()
     {
-        if(WireStorage.cookie == null) return false;
-        return WireStorage.isBearerTokenStillValid();
+        if(WireStorage.cookie == null)
+        {
+            Outputs.create("No cookie stored").verbose().INFO().print();
+            return false;
+        }
+        if(WireStorage.isBearerTokenStillValid())
+        {
+            Outputs.create("Bearer token is valid").verbose().INFO().print();
+            return true;
+        }
+        Outputs.create("Bearer token not valid", this.getClass().getName()).debug().INFO().print();
+        return false;
     }
 
     @Override
@@ -49,7 +59,7 @@ public class WireLogin implements ILoginOut
     @Override
     public boolean logout()
     {
-        String url = URL.WIRE + URL.WIRE_LOGOUT + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_LOGOUT + URL.wireBearerToken();
         String[] headers = new String[]{
                 "cookie", WireStorage.cookie,
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],

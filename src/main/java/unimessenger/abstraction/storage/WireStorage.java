@@ -20,7 +20,8 @@ public class WireStorage
     private static String bearerToken;
     public static String cookie;
     private static Timestamp bearerExpiringTime;
-    public static final String storageFile = "../dataWire.json";
+    public static Timestamp lastNotification = null;
+    public static final String storageFile = "DataStorage/access.json";
 
     public static WireProfile selfProfile = new WireProfile();
     public static ArrayList<WireConversation> conversations = new ArrayList<>();
@@ -36,6 +37,7 @@ public class WireStorage
             obj.put("bearerToken", bearerToken);
             obj.put("bearerTime", bearerExpiringTime.getTime());
             obj.put("clientID", clientID);
+            if(lastNotification != null) obj.put("lastNotification", lastNotification.getTime());
 
             try
             {
@@ -49,6 +51,7 @@ public class WireStorage
             }
         }
     }
+
     public static void saveDataInFile()
     {
         saveDataInFile(cookie);
@@ -67,7 +70,11 @@ public class WireStorage
 
     public static boolean isBearerTokenStillValid()
     {
-        return bearerToken != null && bearerExpiringTime != null && bearerExpiringTime.getTime() > System.currentTimeMillis();
+        if(bearerToken == null) Outputs.create("Bearer token is null").verbose().INFO().print();
+        else if(bearerExpiringTime == null) Outputs.create("Bearer token has no expiring time").verbose().INFO().print();
+        else if(bearerExpiringTime.getTime() <= System.currentTimeMillis()) Outputs.create("Bearer token expired").verbose().INFO().print();
+        else return true;
+        return false;
     }
 
     public static void clearUserData()
@@ -76,6 +83,7 @@ public class WireStorage
         bearerToken = null;
         cookie = null;
         bearerExpiringTime = null;
+        lastNotification = null;
         clearFile();
     }
 
@@ -88,6 +96,7 @@ public class WireStorage
             bearerToken = obj.get("bearerToken").toString();
             bearerExpiringTime = new Timestamp((long) obj.get("bearerTime"));
             clientID = obj.get("clientID").toString();
+            lastNotification = new Timestamp((long) obj.get("lastNotification"));
         } catch(Exception ignored)
         {
             Outputs.create("Failed to load Wire file", "WireStorage").debug().WARNING().print();

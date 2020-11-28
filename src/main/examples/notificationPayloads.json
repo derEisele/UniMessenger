@@ -1,0 +1,127 @@
+{
+  "payloads": {
+    "user.connection": {
+      "connection": {
+        "last_update": "2020-11-25T18:07:24.153Z",
+        "from": "12905427-01dd-4a98-8e5d-b75adc91b44e",
+        "to": "3a36f536-1d3a-4148-a938-689056dab2c5",
+        "message": " ",
+        "conversation": "4cc7495d-1f17-4be0-b796-1fea336c6713",
+        "status": "pending"
+      },
+      "type": "user.connection",
+      "user": {
+        "name": "sophiaochs"
+      }
+    },
+    "user.properties-set": {
+      "type": "user.properties-set",
+      "value": {
+        "settings": {
+          "call": {
+            "enable_vbr_encoding": true
+          },
+          "emoji": {
+            "replace_inline": true
+          },
+          "sound": {
+            "alerts": "all"
+          },
+          "previews": {
+            "send": true
+          },
+          "privacy": {
+            "improve_wire": false
+          },
+          "interface": {
+            "view_folders": false,
+            "theme": "default"
+          },
+          "notifications": "on"
+        },
+        "enable_debugging": false,
+        "contact_import": {},
+        "version": 1
+      },
+      "key": "webapp"
+    },
+    "conversation.otr-message-add": {
+      "data": {
+        "sender": "3599fa9cc37ae9a0",
+        "recipient": "fe9596292452d024",
+        "text": "owABAaEAWCDUKEdqhdHqGX0b\/zPDTPOacd5dcQOjzd5qxfU3LhsqQgJY4QKkAAEBoQBYIK6ImflfMCVvAViNRobN+FXEpsQfZ7u9OwDIEp+aZSkOAqEAoQBYIOWjsFmOveNGRt0snHxq4dHYmZL+rB5JysKl1CiRlwG6A6UAUGVmFv3OES3X\/pFuAt7zhSQBAwIAA6EAWCBy3b4SiL8A8KASiI6\/pk89y6ydZ2Av\/GQBs7TxUwn4ZQRYUYloZI4kzIVFLp1C0VpfcyfruxhOr26HBShdBT2\/RMoBXxgHpjf3mUj0XPgtpk7ab4UDRqASNh8Qw9NMfqE7K6NcXvTt2ZwPdonfOOWbRot\/Gg=="
+      },
+      "from": "e22e08fe-083a-464b-bd39-606b25771da4",
+      "time": "2020-11-26T16:53:14.752Z",
+      "type": "conversation.otr-message-add",
+      "conversation": "f4be5d25-0a17-40e3-8b97-17c50208d1f2"
+    },
+    "conversation.member-join": {
+      "data": {
+        "user_ids": [
+          "12905427-01dd-4a98-8e5d-b75adc91b44e"
+        ],
+        "users": [
+          {
+            "conversation_role": "wire_admin",
+            "id": "12905427-01dd-4a98-8e5d-b75adc91b44e"
+          }
+        ]
+      },
+      "from": "12905427-01dd-4a98-8e5d-b75adc91b44e",
+      "time": "2020-11-25T18:07:31.633Z",
+      "type": "conversation.member-join",
+      "conversation": "4cc7495d-1f17-4be0-b796-1fea336c6713"
+    },
+    "conversation.create": {
+      "data": {
+        "creator": "e22e08fe-083a-464b-bd39-606b25771da4",
+        "access": [
+          "invite"
+        ],
+        "last_event_time": "1970-01-01T00:00:00.000Z",
+        "access_role": "activated",
+        "members": {
+          "self": {
+            "otr_archived": false,
+            "otr_muted_ref": null,
+            "otr_archived_ref": null,
+            "hidden": false,
+            "otr_muted_status": null,
+            "status_ref": "0.0",
+            "conversation_role": "wire_member",
+            "service": null,
+            "otr_muted": false,
+            "status_time": "1970-01-01T00:00:00.000Z",
+            "id": "12905427-01dd-4a98-8e5d-b75adc91b44e",
+            "hidden_ref": null,
+            "status": 0
+          },
+          "others": [
+            {
+              "conversation_role": "wire_admin",
+              "id": "e22e08fe-083a-464b-bd39-606b25771da4",
+              "status": 0
+            },
+            {
+              "conversation_role": "wire_member",
+              "id": "49596e30-1c8d-4ac2-8009-431368f24469",
+              "status": 0
+            }
+          ]
+        },
+        "last_event": "0.0",
+        "name": "Test Gruppe",
+        "receipt_mode": 0,
+        "message_timer": null,
+        "team": null,
+        "id": "04d9f4c9-440c-405c-94c0-cc3a90695a0f",
+        "type": 0
+      },
+      "from": "e22e08fe-083a-464b-bd39-606b25771da4",
+      "time": "2020-11-25T17:02:18.277Z",
+      "type": "conversation.create",
+      "conversation": "04d9f4c9-440c-405c-94c0-cc3a90695a0f"
+    }
+  }
+}

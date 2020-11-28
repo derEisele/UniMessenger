@@ -1,5 +1,6 @@
 package unimessenger.abstraction.encryption.WireCrypto;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.waz.model.Messages;
 import com.wire.bots.cryptobox.CryptoBox;
 import com.wire.bots.cryptobox.CryptoException;
@@ -53,7 +54,8 @@ public class WireCryptoHandler
 
     public static String encrypt(String userID, String clientID, Prekey pk, String msg)
     {
-        if(box == null){
+        if(box == null)
+        {
             box = CryptoFactory.getCryptoInstance();
         }
 
@@ -73,24 +75,40 @@ public class WireCryptoHandler
         return Base64.getEncoder().encodeToString(cypher);
     }
 
-    //TODO TEST private notes Page 8 UUID is payload.from Sender is payload.data.sender
-    public static String decrypt(UUID from, String sender, String text){
-        if(box == null){
+    //UUID is payload.from Sender is payload.data.sender
+    public static String decrypt(UUID from, String sender, String text)
+    {
+        if(box == null)
+        {
             box = CryptoFactory.getCryptoInstance();
         }
+
+        String ret = "";
 
         byte[] dec;
 
         String sID = generateSeassionID(from.toString(), sender);
 
-        try {
+        try
+        {
             dec = box.decrypt(sID, Base64.getDecoder().decode(text));
-        } catch (CryptoException e) {
-            Outputs.create("CryptoException @ Wireryptohandler:decrypt").always().ERROR();
+        } catch(CryptoException e)
+        {
+            Outputs.create("Decrypt CryptoException", "WireCryptoHandler").always().ERROR();
             dec = new byte[1];
         }
+        try
+        {
+            Messages.GenericMessage m = Messages.GenericMessage.parseFrom(dec);
+            //Returns the readable Plain text
+            ret = m.getText().getContent();
 
-        return Base64.getEncoder().encodeToString(dec);
+        } catch(InvalidProtocolBufferException e)
+        {
+            Outputs.create("Invalid Protocol Buffer", "WireCryptoHandler").debug().ERROR().print();
+        }
+
+        return ret;
     }
 
     private static byte[] getByteStreamFromMessage(String message)
@@ -99,20 +117,22 @@ public class WireCryptoHandler
         UUID id = UUID.randomUUID();
         Messages.Text.Builder builder = Messages.Text.newBuilder();
         builder.setContent(message);
-        byte [] content = Messages.GenericMessage.newBuilder().setMessageId(id.toString()).setText(builder).build().toByteArray();
+        byte[] content = Messages.GenericMessage.newBuilder().setMessageId(id.toString()).setText(builder).build().toByteArray();
 
         return content;
     }
 
-    private static PreKey toCryptoPreKey (Prekey old){
+    private static PreKey toCryptoPreKey(Prekey old)
+    {
         return new PreKey(old.getID(), Base64.getDecoder().decode(old.getKey()));
     }
 
-    private static String generateSeassionID(String userID, String clientID){
+    private static String generateSeassionID(String userID, String clientID)
+    {
         return String.format("%s_%s", userID, clientID);
     }
 
-    public static void cleanUp ()
+    public static void cleanUp()
     {
         CryptoFactory.closeBox();
     }

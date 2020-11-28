@@ -22,7 +22,7 @@ public class WireConversations implements IConversations
     @Override
     public boolean requestAllConversations()
     {
-        String url = URL.WIRE + URL.WIRE_CONVERSATIONS + URL.WIRE_TOKEN + WireStorage.getBearerToken();
+        String url = URL.WIRE + URL.WIRE_CONVERSATIONS + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
