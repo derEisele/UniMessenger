@@ -7,6 +7,8 @@ import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
 import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
+import unimessenger.abstraction.storage.Message;
+import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.Outputs;
@@ -20,15 +22,13 @@ public class WireMessageReceiver
 {
     public boolean receiveNewMessages()
     {
-        String token = URL.wireBearerToken();
+        String client = "?client=" + WireStorage.clientID;
         String since = "&since=2020-11-27T10:47:39.941Z";//TODO: Fix string
-        String client = "&client=" + WireStorage.clientID;
-        String url = URL.WIRE + URL.WIRE_NOTIFICATIONS + token + since + client;
-
+        String token = URL.wireBearerToken();
+        String url = URL.WIRE + URL.WIRE_NOTIFICATIONS + client + since + token;
         String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null)
@@ -67,15 +67,13 @@ public class WireMessageReceiver
 
     private boolean receiveMessageText(JSONObject payload)
     {
-        String conversation;
-        String senderUser;
-        Timestamp time;
+        String conversationID;
+        String senderUser = null;
+        Timestamp time = null;
         String decryptedMsg;
 
-        if(payload.containsKey("conversation"))
-        {
-            conversation = payload.get("conversation").toString();
-        } else
+        if(payload.containsKey("conversation")) conversationID = payload.get("conversation").toString();
+        else
         {
             Outputs.create("Conversation notification has no 'conversation' key", this.getClass().getName()).debug().WARNING().print();
             return false;
@@ -87,16 +85,17 @@ public class WireMessageReceiver
             return false;
         }
 
-        if(payload.containsKey("from"))
-        {
-            senderUser = payload.get("from").toString();
-        } else Outputs.create("Conversation notification has no 'from' key").verbose().WARNING().print();
+        if(payload.containsKey("from")) senderUser = payload.get("from").toString();
+        else Outputs.create("Conversation notification has no 'from' key").verbose().WARNING().print();
 
         if(payload.containsKey("time"))
         {
             time = Timestamp.valueOf(payload.get("time").toString().replace("T", " ").replace("Z", ""));
-            if(WireStorage.lastNotification != null && time.getTime() <= WireStorage.lastNotification.getTime()) return false;
-            else WireStorage.lastNotification = time;
+            if(WireStorage.lastNotification != null && time.getTime() <= WireStorage.lastNotification.getTime())
+            {
+                Outputs.create("Notification filtered because of timestamp").verbose().INFO().print();
+                return false;
+            } else WireStorage.lastNotification = time;
         } else Outputs.create("Conversation notification has no 'time' key").verbose().WARNING().print();
 
         JSONObject data = (JSONObject) payload.get("data");
@@ -108,7 +107,17 @@ public class WireMessageReceiver
         }
 
         decryptedMsg = WireCryptoHandler.decrypt(UUID.fromString(payload.get("from").toString()), data.get("sender").toString(), data.get("text").toString());
-        System.out.println("Decrypted Message: " + decryptedMsg);
+
+        if(decryptedMsg.equals("") && WireStorage.getConversationByID(conversationID) != null)
+        {
+            Outputs.create("You have been pinged! Chat: " + WireStorage.getConversationByID(conversationID).conversationName).always().ALERT().print();
+            decryptedMsg = "PING!";
+        }
+
+        WireConversation conversation = WireStorage.getConversationByID(conversationID);
+        Message msg = new Message(decryptedMsg, time, senderUser);
+        if(conversation != null) conversation.addMessage(msg);
+        else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
 
         return true;
     }

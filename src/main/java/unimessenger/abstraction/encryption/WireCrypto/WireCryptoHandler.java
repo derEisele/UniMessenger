@@ -17,7 +17,6 @@ public class WireCryptoHandler
     public static Prekey[] generatePreKeys(int start, int count)
     {
         Prekey[] Keys = new Prekey[count];
-
         try
         {
             PreKey[] keyTemp = CryptoFactory.getCryptoInstance().newPreKeys(start, count);
@@ -26,12 +25,11 @@ public class WireCryptoHandler
                 Keys[i] = new Prekey(keyTemp[i]);
             }
 
-        } catch(CryptoException e)
+        } catch (CryptoException ignored)
         {
-            e.printStackTrace();
+            Outputs.create("Crypto Exception while generating PreKeys", "WireCryptoHandler").debug().ERROR().print();
             cleanUp();
         }
-
         return Keys;
     }
 
@@ -40,31 +38,22 @@ public class WireCryptoHandler
         try
         {
             return new Prekey(CryptoFactory.getCryptoInstance().newLastPreKey());
-        } catch(Exception e)
+        } catch(Exception ignored)
         {
-            e.printStackTrace();
+            Outputs.create("Exception while generating LastKey", "WireCryptoHandler").debug().ERROR().print();
         }
         return null;
     }
 
-    public static void testCase()
-    {
-        encrypt("UID", "CID", generateLastPrekey(), "ThisTestMessageBeing");
-    }
-
     public static String encrypt(String userID, String clientID, Prekey pk, String msg)
     {
-        if(box == null)
-        {
-            box = CryptoFactory.getCryptoInstance();
-        }
+        if(box == null) box = CryptoFactory.getCryptoInstance();
 
         byte[] content = getByteStreamFromMessage(msg);
-        //outsourced to methode for generally equal results
         String id = generateSeassionID(userID, clientID);
         PreKey key = toCryptoPreKey(pk);
-        //made null for null checking the return value
         byte[] cypher = null;
+
         try
         {
             cypher = box.encryptFromPreKeys(id, key, content);
@@ -75,24 +64,18 @@ public class WireCryptoHandler
         return Base64.getEncoder().encodeToString(cypher);
     }
 
-    //UUID is payload.from Sender is payload.data.sender
     public static String decrypt(UUID from, String sender, String text)
     {
-        if(box == null)
-        {
-            box = CryptoFactory.getCryptoInstance();
-        }
+        if(box == null) box = CryptoFactory.getCryptoInstance();
 
         String ret = "";
-
         byte[] dec;
-
         String sID = generateSeassionID(from.toString(), sender);
 
         try
         {
             dec = box.decrypt(sID, Base64.getDecoder().decode(text));
-        } catch(CryptoException e)
+        } catch(CryptoException ignored)
         {
             Outputs.create("Decrypt CryptoException", "WireCryptoHandler").always().ERROR();
             dec = new byte[1];
@@ -100,14 +83,11 @@ public class WireCryptoHandler
         try
         {
             Messages.GenericMessage m = Messages.GenericMessage.parseFrom(dec);
-            //Returns the readable Plain text
             ret = m.getText().getContent();
-
-        } catch(InvalidProtocolBufferException e)
+        } catch(InvalidProtocolBufferException ignored)
         {
             Outputs.create("Invalid Protocol Buffer", "WireCryptoHandler").debug().ERROR().print();
         }
-
         return ret;
     }
 
@@ -117,9 +97,8 @@ public class WireCryptoHandler
         UUID id = UUID.randomUUID();
         Messages.Text.Builder builder = Messages.Text.newBuilder();
         builder.setContent(message);
-        byte[] content = Messages.GenericMessage.newBuilder().setMessageId(id.toString()).setText(builder).build().toByteArray();
 
-        return content;
+        return Messages.GenericMessage.newBuilder().setMessageId(id.toString()).setText(builder).build().toByteArray();
     }
 
     private static PreKey toCryptoPreKey(Prekey old)

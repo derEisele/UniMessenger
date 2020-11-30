@@ -33,7 +33,8 @@ public class RequestBuilder
         if(url == null) return null;
         if(body == null) return null;
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers.ofString(body)).uri(URI.create(url)).headers(headers);//TODO: Add body to request
+        //TODO: Add body to request
+        HttpRequest.Builder builder = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers.ofString(body)).uri(URI.create(url)).headers(headers);
         builder.DELETE();
         return builder.build();
     }

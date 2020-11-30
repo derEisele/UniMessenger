@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Updater implements Runnable
 {
-    public static ArrayList<SERVICE> runningServices;
+    private static ArrayList<SERVICE> runningServices;
 
     @Override
     public void run()
@@ -23,10 +23,13 @@ public class Updater implements Runnable
             {
                 if(validateAccess(service))
                 {
-                    new APIAccess().getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
-                    //TODO: Refresh messages (Might need to use /await)
-                }
-                else removeService(service);
+                    APIAccess access = new APIAccess();
+                    access.getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
+                    if(!access.getMessageInterface(service).receiveNewMessages())//TODO: Might need to change to /await
+                    {
+                        Outputs.create("Error receiving new messages", this.getClass().getName()).verbose().WARNING().print();
+                    }
+                } else removeService(service);
             }
             try
             {
@@ -48,13 +51,9 @@ public class Updater implements Runnable
             case TELEGRAM:
                 if(login.checkIfLoggedIn())
                 {
-                    if(login.needsRefresh() && WireStorage.getBearerToken() != null)
-                    {
-                        return access.getUtilInterface(service).refreshSession();
-                    }
+                    if(login.needsRefresh() && WireStorage.getBearerToken() != null) return access.getUtilInterface(service).refreshSession();
                     else return true;
-                }
-                else if(WireStorage.getBearerToken() != null && access.getUtilInterface(service).refreshSession()) return true;
+                } else if(WireStorage.getBearerToken() != null && access.getUtilInterface(service).refreshSession()) return true;
                 return login.login();
             case NONE:
             default:

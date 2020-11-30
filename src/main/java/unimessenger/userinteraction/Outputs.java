@@ -8,6 +8,7 @@ public class Outputs
     private static final String WHITE = "\u001B[37m";
     private static final String YELLOW = "\u001B[33m";
     private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
 
     private String color = "";
     private String creatorClass = null;
@@ -56,6 +57,11 @@ public class Outputs
     public Outputs ERROR()
     {
         color = RED;
+        return this;
+    }
+    public Outputs ALERT()
+    {
+        color = GREEN;
         return this;
     }
 

@@ -1,6 +1,7 @@
 package unimessenger.abstraction.interfaces.wire;
 
 import unimessenger.abstraction.interfaces.IData;
+import unimessenger.abstraction.storage.Message;
 import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
 import unimessenger.abstraction.storage.MessengerStructure.WirePerson;
 import unimessenger.abstraction.storage.WireStorage;
@@ -31,7 +32,6 @@ public class WireData implements IData
         {
             if(con.id.equals(id))
             {
-                //TODO: Return name of chat partner if conversation type is NORMAL
                 return con.conversationName;
             }
         }
@@ -57,5 +57,31 @@ public class WireData implements IData
         }
 
         return members;
+    }
+    @Override
+    public ArrayList<Message> getNewMessagesFromConversation(String conversationID)
+    {
+        WireConversation con = WireStorage.getConversationByID(conversationID);
+        if(con == null) return null;
+        return con.getNewMessages();
+    }
+    @Override
+    public ArrayList<Message> getAllMessagesFromConversation(String conversationID)
+    {
+        WireConversation con = WireStorage.getConversationByID(conversationID);
+        if(con == null || con.getMessages().isEmpty()) return null;
+        return con.getMessages();
+    }
+    @Override
+    public ArrayList<Message> getLastXMessagesFromConversation(String conversationID, int messages)
+    {
+        WireConversation con = WireStorage.getConversationByID(conversationID);
+        if(con == null || con.getMessages().isEmpty()) return null;
+        ArrayList<Message> msgs = con.getMessages();
+        while(msgs.size() > messages)
+        {
+            msgs.remove(0);
+        }
+        return msgs;
     }
 }

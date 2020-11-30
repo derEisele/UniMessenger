@@ -1,82 +1,71 @@
 package unimessenger.abstraction.storage;
 
+import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
 import unimessenger.userinteraction.Outputs;
 
 import java.io.*;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
-public class ConversationHandler implements Serializable {
-
-    private static final String FILEPATH="DataStorage/Chats";
-
+public class ConversationHandler implements Serializable
+{
     private static ConversationHandler cH;
+    private static final String FILEPATH = WireStorage.storageDirectory + "/Chats";
+    private ArrayList<WireConversation> conversations;
 
-    private LinkedList<Conversation> conversations;
-
-    public ConversationHandler(){
-        conversations = new LinkedList<Conversation>();
+    public ConversationHandler()
+    {
+        conversations = new ArrayList<>();
     }
 
-    public LinkedList<Conversation> getConversations(){
+    public static void clearFile()
+    {
+        //TODO: Delete or overwrite file
+    }
+
+    public ArrayList<WireConversation> getConversations()
+    {
         return conversations;
     }
 
-    public void newConversation(Conversation c){
+    public void newConversation(WireConversation c)
+    {
         conversations.add(c);
     }
 
-    /*
-    * Returns a conversation by ID
-    * Returns null if conv is not found
-    *
-    *
-    * */
-    public Conversation getConvByID(String convID){
-        for(Conversation c : conversations){
-            if(c.getConvID()==convID){
-                return c;
-            }
-        }
-        return null;
+    public void clearConvs()
+    {
+        conversations = new ArrayList<>();
     }
 
-    //TODO test
-    public static ConversationHandler getInstance(){
-        if(cH == null){
-            try (FileInputStream fis = new FileInputStream(FILEPATH);
-                 ObjectInputStream ois = new ObjectInputStream(fis)) {
-
-                // read object from file
+    public static ConversationHandler getInstance()
+    {
+        if(cH == null)
+        {
+            try(FileInputStream fis = new FileInputStream(FILEPATH); ObjectInputStream ois = new ObjectInputStream(fis))
+            {
                 cH = (ConversationHandler) ois.readObject();
-
-            } catch (IOException | ClassNotFoundException ex) {
+            } catch(IOException | ClassNotFoundException ex)
+            {
                 Outputs.create("ConnectionHandler not on disc or not loaded, Generating new one");
                 cH = new ConversationHandler();
+                save();
             }
         }
         return cH;
     }
 
-    public static void save(){
-        try {
+    public static void save()
+    {
+        try
+        {
             FileOutputStream fileOut = new FileOutputStream(FILEPATH);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(cH);
             objectOut.close();
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch(Exception ignored)
+        {
+            Outputs.create("Error when saving Conversations to file", "ConversationHandler").debug().WARNING().print();
         }
-    }
-    @Deprecated
-    public static void Test(){
-        ConversationHandler ch = ConversationHandler.getInstance();
-        String PartnerReadable = "Partner";
-        ch.newConversation(new Conversation("1234", "sadf", PartnerReadable));
-        ConversationHandler.save();
-        cH = null;
-        ch = ConversationHandler.getInstance();
-        System.out.println(ch.getConversations().get(0).getPartnerReadable());
-        System.out.println("Here Assert complete");
     }
 }
