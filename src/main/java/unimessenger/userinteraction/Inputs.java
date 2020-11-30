@@ -61,7 +61,8 @@ public class Inputs
         System.out.println(question);
         System.out.println("Empty line to finish text input");
 
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
+        boolean firstLine = true;
         while(true)
         {
             String line = "";
@@ -73,10 +74,11 @@ public class Inputs
                 Outputs.create("Problem with reading a line", "Inputs").debug().ERROR().print();
             }
             if(line.equals("")) break;
-            ret += System.lineSeparator();
-            ret += line;
+            if(firstLine) firstLine = false;
+            else ret.append(System.lineSeparator());
+            ret.append(line);
         }
 
-        return ret;
+        return ret.toString();
     }
 }

@@ -26,11 +26,9 @@ public class WireMessageReceiver
         String since = "&since=2020-11-27T10:47:39.941Z";//TODO: Fix string
         String token = URL.wireBearerToken();
         String url = URL.WIRE + URL.WIRE_NOTIFICATIONS + client + since + token;
-
         String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null)
@@ -74,10 +72,8 @@ public class WireMessageReceiver
         Timestamp time = null;
         String decryptedMsg;
 
-        if(payload.containsKey("conversation"))
-        {
-            conversationID = payload.get("conversation").toString();
-        } else
+        if(payload.containsKey("conversation")) conversationID = payload.get("conversation").toString();
+        else
         {
             Outputs.create("Conversation notification has no 'conversation' key", this.getClass().getName()).debug().WARNING().print();
             return false;
@@ -89,10 +85,8 @@ public class WireMessageReceiver
             return false;
         }
 
-        if(payload.containsKey("from"))
-        {
-            senderUser = payload.get("from").toString();
-        } else Outputs.create("Conversation notification has no 'from' key").verbose().WARNING().print();
+        if(payload.containsKey("from")) senderUser = payload.get("from").toString();
+        else Outputs.create("Conversation notification has no 'from' key").verbose().WARNING().print();
 
         if(payload.containsKey("time"))
         {
@@ -101,8 +95,7 @@ public class WireMessageReceiver
             {
                 Outputs.create("Notification filtered because of timestamp").verbose().INFO().print();
                 return false;
-            }
-            else WireStorage.lastNotification = time;
+            } else WireStorage.lastNotification = time;
         } else Outputs.create("Conversation notification has no 'time' key").verbose().WARNING().print();
 
         JSONObject data = (JSONObject) payload.get("data");
@@ -115,9 +108,14 @@ public class WireMessageReceiver
 
         decryptedMsg = WireCryptoHandler.decrypt(UUID.fromString(payload.get("from").toString()), data.get("sender").toString(), data.get("text").toString());
 
+        if(decryptedMsg.equals("") && WireStorage.getConversationByID(conversationID) != null)
+        {
+            Outputs.create("You have been pinged! Chat: " + WireStorage.getConversationByID(conversationID).conversationName).always().ALERT().print();
+            decryptedMsg = "PING!";
+        }
+
         WireConversation conversation = WireStorage.getConversationByID(conversationID);
         Message msg = new Message(decryptedMsg, time, senderUser);
-
         if(conversation != null) conversation.addMessage(msg);
         else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
 

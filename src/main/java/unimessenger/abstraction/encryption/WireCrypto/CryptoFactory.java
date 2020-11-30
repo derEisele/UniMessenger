@@ -19,13 +19,11 @@ public class CryptoFactory
                 e.printStackTrace();
             }
         }
-
         return b;
     }
 
     public static void closeBox()
     {
-        if(b != null && !b.isClosed())
-            b.close();
+        if(b != null && !b.isClosed()) b.close();
     }
 }

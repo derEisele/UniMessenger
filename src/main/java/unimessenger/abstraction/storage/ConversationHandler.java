@@ -8,11 +8,8 @@ import java.util.ArrayList;
 
 public class ConversationHandler implements Serializable
 {
-
-    private static final String FILEPATH = WireStorage.storageDirectory + "/Chats";
-
     private static ConversationHandler cH;
-
+    private static final String FILEPATH = WireStorage.storageDirectory + "/Chats";
     private ArrayList<WireConversation> conversations;
 
     public ConversationHandler()
@@ -22,7 +19,7 @@ public class ConversationHandler implements Serializable
 
     public static void clearFile()
     {
-        //TODO delteFILE
+        //TODO: Delete or overwrite file
     }
 
     public ArrayList<WireConversation> getConversations()
@@ -40,22 +37,13 @@ public class ConversationHandler implements Serializable
         conversations = new ArrayList<>();
     }
 
-    /*
-     * Returns a conversation by ID
-     * Returns null if conv is not found
-     *
-     * */
-
     public static ConversationHandler getInstance()
     {
         if(cH == null)
         {
-            try(FileInputStream fis = new FileInputStream(FILEPATH);
-                ObjectInputStream ois = new ObjectInputStream(fis))
+            try(FileInputStream fis = new FileInputStream(FILEPATH); ObjectInputStream ois = new ObjectInputStream(fis))
             {
-                // read object from file
                 cH = (ConversationHandler) ois.readObject();
-
             } catch(IOException | ClassNotFoundException ex)
             {
                 Outputs.create("ConnectionHandler not on disc or not loaded, Generating new one");
@@ -75,15 +63,9 @@ public class ConversationHandler implements Serializable
             objectOut.writeObject(cH);
             objectOut.close();
 
-        } catch(Exception ex)
+        } catch(Exception ignored)
         {
-            ex.printStackTrace();
+            Outputs.create("Error when saving Conversations to file", "ConversationHandler").debug().WARNING().print();
         }
-    }
-
-    @Deprecated
-    public static void Test()
-    {
-
     }
 }

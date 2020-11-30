@@ -25,9 +25,11 @@ public class Updater implements Runnable
                 {
                     APIAccess access = new APIAccess();
                     access.getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
-                    access.getMessageInterface(service).receiveNewMessages();//TODO: Might need to change to /await
-                }
-                else removeService(service);
+                    if(!access.getMessageInterface(service).receiveNewMessages())//TODO: Might need to change to /await
+                    {
+                        Outputs.create("Error receiving new messages", this.getClass().getName()).verbose().WARNING().print();
+                    }
+                } else removeService(service);
             }
             try
             {
@@ -49,13 +51,9 @@ public class Updater implements Runnable
             case TELEGRAM:
                 if(login.checkIfLoggedIn())
                 {
-                    if(login.needsRefresh() && WireStorage.getBearerToken() != null)
-                    {
-                        return access.getUtilInterface(service).refreshSession();
-                    }
+                    if(login.needsRefresh() && WireStorage.getBearerToken() != null) return access.getUtilInterface(service).refreshSession();
                     else return true;
-                }
-                else if(WireStorage.getBearerToken() != null && access.getUtilInterface(service).refreshSession()) return true;
+                } else if(WireStorage.getBearerToken() != null && access.getUtilInterface(service).refreshSession()) return true;
                 return login.login();
             case NONE:
             default:

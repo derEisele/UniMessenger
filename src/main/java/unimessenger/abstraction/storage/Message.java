@@ -5,15 +5,15 @@ import java.sql.Timestamp;
 
 public class Message implements Serializable
 {
-    private String text;
-    private Timestamp time;
-    private String sender;
+    private final String text;
+    private final Timestamp time;
+    private final String senderID;
 
-    public Message(String text, Timestamp time, String sender)
+    public Message(String text, Timestamp time, String senderID)
     {
         this.text = text;
         this.time = time;
-        this.sender = sender;
+        this.senderID = senderID;
     }
 
     public Timestamp getTime()
@@ -26,8 +26,8 @@ public class Message implements Serializable
         return text;
     }
 
-    public String getSender()
+    public String getSenderID()
     {
-        return sender;
+        return senderID;
     }
 }

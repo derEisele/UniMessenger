@@ -20,8 +20,8 @@ public class WireConversation implements Serializable
     public String last_event_time;
     public String message_timer;
     public String last_event;
-    private ArrayList<Message> newMessages;
-    private ArrayList<Message> messages;
+    private final ArrayList<Message> newMessages;
+    private final ArrayList<Message> messages;
 
     public WireConversation()
     {

@@ -8,6 +8,8 @@ import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
 import unimessenger.abstraction.encryption.WireCrypto.Prekey;
 import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
+import unimessenger.abstraction.storage.Message;
+import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.Outputs;
@@ -15,6 +17,7 @@ import unimessenger.util.enums.REQUEST;
 
 import java.lang.constant.Constable;
 import java.net.http.HttpResponse;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,6 +37,11 @@ public class WireMessageSender
         else if(response.statusCode() == 201)
         {
             Outputs.create("Message sent correctly").verbose().INFO().print();
+            WireConversation conversation = WireStorage.getConversationByID(chatID);
+            Message msg = new Message(text, new Timestamp(System.currentTimeMillis()), WireStorage.userID);
+            if(conversation != null) conversation.addMessage(msg);
+            else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+
             return true;
         } else Outputs.create("Response code was " + response.statusCode(), this.getClass().getName()).debug().WARNING().print();
         return false;
@@ -109,7 +117,6 @@ public class WireMessageSender
         String url = URL.WIRE + URL.WIRE_USERS + "/" + userID + URL.WIRE_PREKEY + "/" + clientID + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null) Outputs.create("Could not get a prekey for a client", "WireMessages").debug().WARNING().print();

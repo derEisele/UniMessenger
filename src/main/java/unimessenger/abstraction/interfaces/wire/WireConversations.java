@@ -35,7 +35,6 @@ public class WireConversations implements IConversations
         {
             //TODO: If "has more" key in body is true, ask for more conversations
             //TODO: Sort chats after most recent activity
-
             try
             {
                 JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
@@ -57,7 +56,6 @@ public class WireConversations implements IConversations
                         if(!exists) WireStorage.conversations.add(newConversation);
                     }
                 }
-
                 Outputs.create("Successfully reloaded all conversations").verbose().INFO().print();
                 return true;
             } catch(ParseException ignored)

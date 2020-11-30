@@ -29,7 +29,6 @@ public class WireUtil implements IUtil
                 "cookie", WireStorage.cookie,
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, "", headers);
 
         if(response == null) Outputs.create("Could not get a HTTP response", this.getClass().getName()).debug().WARNING().print();
@@ -64,7 +63,6 @@ public class WireUtil implements IUtil
         String[] headers = new String[]{
                 Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null) Outputs.create("No response received", this.getClass().getName()).debug().WARNING().print();
@@ -127,15 +125,13 @@ public class WireUtil implements IUtil
         {
             WireStorage.persistent = false;
             return registerClient(false, pw);
-        }
-        else return id;
+        } else return id;
     }
     private static ArrayList<String> getAllClientIDs() throws ParseException
     {
         String url = URL.WIRE + URL.WIRE_CLIENTS + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null)
@@ -162,7 +158,6 @@ public class WireUtil implements IUtil
         String url = URL.WIRE + URL.WIRE_CLIENTS + "/" + clientID + URL.wireBearerToken();
         String[] headers = new String[]{
                 Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null) Outputs.create("No response received", "WireUtil").debug().WARNING().print();
@@ -194,6 +189,7 @@ public class WireUtil implements IUtil
         Prekey lastKey = WireCryptoHandler.generateLastPrekey();
 
         JSONObject lastkey = new JSONObject();
+        assert lastKey != null;
         lastkey.put("key", lastKey.getKey());
         lastkey.put("id", lastKey.getID());
         obj.put("lastkey", lastkey);
@@ -205,7 +201,7 @@ public class WireUtil implements IUtil
         obj.put("sigkeys", sigkeys);
 
         obj.put("password", pw);
-        
+
         if(persistent) obj.put("type", "permanent");
         else obj.put("type", "temporary");
 
@@ -216,9 +212,8 @@ public class WireUtil implements IUtil
         obj.put("label", "Custom Wire Client");
 
         String body = obj.toJSONString();
-
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, body, headers);
-        
+
         if(response == null) Outputs.create("No response received", "WireUtil").debug().WARNING().print();
         else if(response.statusCode() == 201)
         {
