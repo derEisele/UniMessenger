@@ -121,11 +121,12 @@ public class WireUtil implements IUtil
             }
         }
 
-        String id = registerClient(WireStorage.persistent);
+        String pw = Inputs.getStringAnswerFrom("Please enter your password to register this client");
+        String id = registerClient(WireStorage.persistent, pw);
         if(id == null)
         {
             WireStorage.persistent = false;
-            return registerClient(false);
+            return registerClient(false, pw);
         }
         else return id;
     }
@@ -180,7 +181,7 @@ public class WireUtil implements IUtil
 
         return false;
     }
-    private static String registerClient(boolean persistent) throws ParseException
+    private static String registerClient(boolean persistent, String pw) throws ParseException
     {
         String url = URL.WIRE + URL.WIRE_CLIENTS + URL.wireBearerToken();
         String[] headers = new String[]{
@@ -202,8 +203,7 @@ public class WireUtil implements IUtil
         sigkeys.put("enckey", Base64.getEncoder().encodeToString(new byte[32]));
         sigkeys.put("mackey", Base64.getEncoder().encodeToString(new byte[32]));
         obj.put("sigkeys", sigkeys);
-        
-        String pw = Inputs.getStringAnswerFrom("Please enter your password to register this client");
+
         obj.put("password", pw);
         
         if(persistent) obj.put("type", "permanent");

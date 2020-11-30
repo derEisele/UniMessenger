@@ -12,10 +12,10 @@ import unimessenger.abstraction.storage.MessengerStructure.WirePerson;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.Outputs;
+import unimessenger.util.enums.CONVERSATIONTYPE;
 import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 
 public class WireConversations implements IConversations
 {
@@ -36,19 +36,28 @@ public class WireConversations implements IConversations
             //TODO: If "has more" key in body is true, ask for more conversations
             //TODO: Sort chats after most recent activity
 
-            ArrayList<WireConversation> newConList = new ArrayList<>();
-
             try
             {
                 JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
                 JSONArray conArr = (JSONArray) obj.get("conversations");
                 for(Object o : conArr)
                 {
-                    WireConversation con = getConversation((JSONObject) new JSONParser().parse(o.toString()));
-                    if(con.conversationName != null) newConList.add(con);
+                    WireConversation newConversation = getConversation((JSONObject) new JSONParser().parse(o.toString()));
+                    if(newConversation.conversationName != null)
+                    {
+                        boolean exists = false;
+                        for(WireConversation con : WireStorage.conversations)
+                        {
+                            if(con.id.equals(newConversation.id))
+                            {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if(!exists) WireStorage.conversations.add(newConversation);
+                    }
                 }
 
-                WireStorage.conversations = newConList;
                 Outputs.create("Successfully reloaded all conversations").verbose().INFO().print();
                 return true;
             } catch(ParseException ignored)
@@ -67,10 +76,15 @@ public class WireConversations implements IConversations
     {
         WireConversation con = new WireConversation();
 
-        //TODO: Store access
+        JSONArray access = (JSONArray) conObj.get("access");
+        for(Object a : access)
+        {
+            con.access.add(a.toString());
+        }
 
         con.creatorID = conObj.get("creator").toString();
         con.accessRole = conObj.get("access_role").toString();
+        con.setConversationType(Integer.parseInt(conObj.get("type").toString()));
 
         JSONObject members = (JSONObject) new JSONParser().parse(conObj.get("members").toString());
         con.members.add(getSelf((JSONObject) new JSONParser().parse(members.get("self").toString())));
@@ -80,10 +94,17 @@ public class WireConversations implements IConversations
             con.members.add(getPerson((JSONObject) new JSONParser().parse(o.toString())));
         }
 
-        if(conObj.get("name") != null) con.conversationName = conObj.get("name").toString();
+        if(con.conversationType == CONVERSATIONTYPE.NORMAL)
+        {
+            if(con.members.size() > 1 && con.members.get(1) != null)
+            {
+                String partnerID = con.members.get(1).id;
+                String conName = getNameFromPartnerID(partnerID);
+                if(conName != null) con.conversationName = conName;
+            }
+        } else if(conObj.get("name") != null) con.conversationName = conObj.get("name").toString();
         if(conObj.get("team") != null) con.team = conObj.get("team").toString();
         con.id = conObj.get("id").toString();
-        con.setConversationType(Integer.parseInt(conObj.get("type").toString()));
         if(conObj.get("receipt_mode") != null) con.receipt_mode = conObj.get("receipt_mode").toString();
         con.last_event_time = conObj.get("last_event_time").toString();
         if(conObj.get("message_timer") != null) con.message_timer = conObj.get("message_timer").toString();
@@ -117,5 +138,10 @@ public class WireConversations implements IConversations
         person.id = personObj.get("id").toString();
 
         return person;
+    }
+    private static String getNameFromPartnerID(String userID)
+    {
+        //TODO: Get name of specified user
+        return userID;
     }
 }

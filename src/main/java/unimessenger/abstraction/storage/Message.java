@@ -3,20 +3,31 @@ package unimessenger.abstraction.storage;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Message implements Serializable {
+public class Message implements Serializable
+{
     private String text;
     private Timestamp time;
+    private String sender;
 
-    public Message(String text, Timestamp time){
-        this.text=text;
-        this.time=time;
+    public Message(String text, Timestamp time, String sender)
+    {
+        this.text = text;
+        this.time = time;
+        this.sender = sender;
     }
 
-    public Timestamp getTime() {
+    public Timestamp getTime()
+    {
         return time;
     }
 
-    public String getText() {
+    public String getText()
+    {
         return text;
+    }
+
+    public String getSender()
+    {
+        return sender;
     }
 }

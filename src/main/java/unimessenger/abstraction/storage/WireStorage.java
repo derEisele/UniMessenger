@@ -6,6 +6,7 @@ import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
 import unimessenger.abstraction.storage.MessengerStructure.WireProfile;
 import unimessenger.userinteraction.Outputs;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,16 +16,41 @@ import java.util.ArrayList;
 public class WireStorage
 {
     public static String userID;
-    public static String clientID = "7ec6cfc08fc9db51";
-    public static boolean persistent = false;
+    public static String clientID;
+    public static boolean persistent;
     private static String bearerToken;
     public static String cookie;
     private static Timestamp bearerExpiringTime;
-    public static Timestamp lastNotification = null;
-    public static final String storageFile = "DataStorage/access.json";
+    public static Timestamp lastNotification;
+    public static WireProfile selfProfile;
+    public static ArrayList<WireConversation> conversations;
 
-    public static WireProfile selfProfile = new WireProfile();
-    public static ArrayList<WireConversation> conversations = new ArrayList<>();
+    public static String storageDirectory;
+    private static String storageFile;
+    public static ConversationHandler convH;
+
+    public static void init()
+    {
+        userID = null;
+        clientID = null;
+        persistent = false;
+        bearerToken = null;
+        cookie = null;
+        bearerExpiringTime = null;
+        lastNotification = null;
+        selfProfile = new WireProfile();
+        conversations = new ArrayList<>();
+
+        storageDirectory = System.getProperty("user.dir");
+        if(storageDirectory == null) storageDirectory = "../DataStorage";
+        else storageDirectory = storageDirectory.replace("\\", "/") + "/DataStorage";
+        storageFile = storageDirectory + "/access.json";
+
+        if(new File(storageDirectory).mkdirs()) Outputs.create("Storage folder successfully created").verbose().INFO().print();
+        else Outputs.create("Storage folder not created", "WireStorage").debug().WARNING().print();
+
+        convH = ConversationHandler.getInstance();
+    }
 
     public static void saveDataInFile(String accessCookie)
     {
@@ -50,6 +76,13 @@ public class WireStorage
                 Outputs.create("Could not write to Wire file", "WireStorage").debug().WARNING().print();
             }
         }
+
+        convH.clearConvs();
+        for(WireConversation c : conversations)
+        {
+            convH.newConversation(c);
+        }
+        ConversationHandler.save();
     }
 
     public static void saveDataInFile()
@@ -71,8 +104,10 @@ public class WireStorage
     public static boolean isBearerTokenStillValid()
     {
         if(bearerToken == null) Outputs.create("Bearer token is null").verbose().INFO().print();
-        else if(bearerExpiringTime == null) Outputs.create("Bearer token has no expiring time").verbose().INFO().print();
-        else if(bearerExpiringTime.getTime() <= System.currentTimeMillis()) Outputs.create("Bearer token expired").verbose().INFO().print();
+        else if(bearerExpiringTime == null)
+            Outputs.create("Bearer token has no expiring time").verbose().INFO().print();
+        else if(bearerExpiringTime.getTime() <= System.currentTimeMillis())
+            Outputs.create("Bearer token expired").verbose().INFO().print();
         else return true;
         return false;
     }
@@ -85,6 +120,7 @@ public class WireStorage
         bearerExpiringTime = null;
         lastNotification = null;
         clearFile();
+        ConversationHandler.clearFile();
     }
 
     public static void readDataFromFiles()
@@ -97,6 +133,10 @@ public class WireStorage
             bearerExpiringTime = new Timestamp((long) obj.get("bearerTime"));
             clientID = obj.get("clientID").toString();
             lastNotification = new Timestamp((long) obj.get("lastNotification"));
+
+            //Loading the messages and cons into conversations list
+            conversations = convH.getConversations();
+
         } catch(Exception ignored)
         {
             Outputs.create("Failed to load Wire file", "WireStorage").debug().WARNING().print();
@@ -115,5 +155,14 @@ public class WireStorage
         {
             Outputs.create("Could not clear Wire file", "Wire Storage").debug().WARNING().print();
         }
+    }
+
+    public static WireConversation getConversationByID(String conversationID)
+    {
+        for(WireConversation c : conversations)
+        {
+            if(c.id.equals(conversationID)) return c;
+        }
+        return null;
     }
 }

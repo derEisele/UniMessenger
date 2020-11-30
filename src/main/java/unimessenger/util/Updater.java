@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Updater implements Runnable
 {
-    public static ArrayList<SERVICE> runningServices;
+    private static ArrayList<SERVICE> runningServices;
 
     @Override
     public void run()
@@ -23,8 +23,9 @@ public class Updater implements Runnable
             {
                 if(validateAccess(service))
                 {
-                    new APIAccess().getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
-                    //TODO: Refresh messages (Might need to use /await)
+                    APIAccess access = new APIAccess();
+                    access.getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
+                    access.getMessageInterface(service).receiveNewMessages();//TODO: Might need to change to /await
                 }
                 else removeService(service);
             }

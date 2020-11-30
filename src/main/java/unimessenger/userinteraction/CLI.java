@@ -66,7 +66,6 @@ public class CLI implements Runnable
         WireStorage.saveDataInFile();
         Outputs.create("Storage written to file").verbose().INFO().print();
 
-        //TODO make sure this is executed every time the Program is closed no matter where
         Outputs.create("Cleaning the Box").verbose().INFO().print();
         CryptoFactory.closeBox();
         Outputs.create("Box Clean").verbose().INFO().print();

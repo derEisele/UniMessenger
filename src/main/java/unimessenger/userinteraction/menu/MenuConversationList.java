@@ -2,7 +2,6 @@ package unimessenger.userinteraction.menu;
 
 import unimessenger.abstraction.APIAccess;
 import unimessenger.abstraction.interfaces.IData;
-import unimessenger.abstraction.interfaces.wire.WireMessageReceiver;
 import unimessenger.abstraction.storage.ConversationHandler;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Inputs;
@@ -22,7 +21,6 @@ public class MenuConversationList
         System.out.println("3) Log out of '" + CLI.currentService + "'");
         System.out.println("4) Show Main Menu");
         System.out.println("5) Exit Program");
-        System.out.println("10) Receive all notifications");//TODO: Remove
         System.out.println("13) TestStuff");//TODO: Remove
 
         int userInput = Inputs.getIntAnswerFrom("Please enter the number of the option you would like to choose.");
@@ -43,9 +41,6 @@ public class MenuConversationList
                 break;
             case 5:
                 CLI.currentMenu = MENU.EXIT;
-                break;
-            case 10:
-                new WireMessageReceiver().receiveNewMessages();
                 break;
             case 13:
                 ConversationHandler.Test();

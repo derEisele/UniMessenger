@@ -1,10 +1,12 @@
 package unimessenger.abstraction.storage.MessengerStructure;
 
+import unimessenger.abstraction.storage.Message;
 import unimessenger.util.enums.CONVERSATIONTYPE;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class WireConversation
+public class WireConversation implements Serializable
 {
     public ArrayList<String> access;
     public String creatorID;
@@ -18,6 +20,8 @@ public class WireConversation
     public String last_event_time;
     public String message_timer;
     public String last_event;
+    private ArrayList<Message> newMessages;
+    private ArrayList<Message> messages;
 
     public WireConversation()
     {
@@ -33,6 +37,8 @@ public class WireConversation
         last_event_time = null;
         message_timer = null;
         last_event = null;
+        newMessages = new ArrayList<>();
+        messages = new ArrayList<>();
     }
 
     public void setConversationType(int type)
@@ -52,5 +58,26 @@ public class WireConversation
                 conversationType = CONVERSATIONTYPE.UNKNOWN;
                 break;
         }
+    }
+
+    public void addMessage(Message m)
+    {
+        newMessages.add(m);
+    }
+    public ArrayList<Message> getMessages()
+    {
+        return messages;
+    }
+    public ArrayList<Message> getNewMessages()
+    {
+        ArrayList<Message> msgs = new ArrayList<>();
+
+        while(!newMessages.isEmpty())
+        {
+            messages.add(newMessages.get(0));
+            msgs.add(newMessages.get(0));
+            newMessages.remove(0);
+        }
+        return msgs;
     }
 }

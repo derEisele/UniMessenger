@@ -1,6 +1,8 @@
 package unimessenger.abstraction.storage.MessengerStructure;
 
-public class WirePerson
+import java.io.Serializable;
+
+public class WirePerson implements Serializable
 {
     public String hidden_ref;
     public int status;
