@@ -48,8 +48,10 @@ public class WireCryptoHandler
     public static String encrypt(String userID, String clientID, Prekey pk, String msg)
     {
         if(box == null) box = CryptoFactory.getCryptoInstance();
+        byte[] content;
 
-        byte[] content = getByteStreamFromMessage(msg);
+        if(msg.equals("")) content = getByteStreamForPing();
+        else content = getByteStreamForMessage(msg);
         String id = generateSeassionID(userID, clientID);
         PreKey key = toCryptoPreKey(pk);
         byte[] cypher = null;
@@ -91,7 +93,7 @@ public class WireCryptoHandler
         return ret;
     }
 
-    private static byte[] getByteStreamFromMessage(String message)
+    private static byte[] getByteStreamForMessage(String message)
     {
         //TODO understand Code because i dont ^^ see page 7 hand written doku
         UUID id = UUID.randomUUID();
@@ -99,6 +101,13 @@ public class WireCryptoHandler
         builder.setContent(message);
 
         return Messages.GenericMessage.newBuilder().setMessageId(id.toString()).setText(builder).build().toByteArray();
+    }
+    private static byte[] getByteStreamForPing()
+    {
+        UUID id = UUID.randomUUID();
+        Messages.Knock.Builder builder = Messages.Knock.newBuilder().setHotKnock(false);
+
+        return Messages.GenericMessage.newBuilder().setMessageId(id.toString()).setKnock(builder).build().toByteArray();
     }
 
     private static PreKey toCryptoPreKey(Prekey old)

@@ -38,8 +38,8 @@ public class WireMessageSender
         {
             Outputs.create("Message sent correctly").verbose().INFO().print();
             WireConversation conversation = WireStorage.getConversationByID(chatID);
-            Message msg = new Message(text, new Timestamp(System.currentTimeMillis()), WireStorage.userID);
-            if(conversation != null) conversation.addMessage(msg);
+            if(text.equals("")) text = "PING";
+            if(conversation != null) conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis()), WireStorage.userID));
             else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
 
             return true;
