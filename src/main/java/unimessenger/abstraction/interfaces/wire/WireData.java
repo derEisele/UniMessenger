@@ -32,7 +32,7 @@ public class WireData implements IData
         {
             if(con.id.equals(id))
             {
-                return con.conversationName;
+                return con.getConversationName();
             }
         }
         return null;

@@ -42,7 +42,7 @@ public class WireConversations implements IConversations
                 for(Object o : conArr)
                 {
                     WireConversation newConversation = getConversation((JSONObject) new JSONParser().parse(o.toString()));
-                    if(newConversation.conversationName != null)
+                    if(newConversation.getConversationName() != null)
                     {
                         boolean exists = false;
                         for(WireConversation con : WireStorage.conversations)
@@ -98,9 +98,9 @@ public class WireConversations implements IConversations
             {
                 String partnerID = con.members.get(1).id;
                 String conName = getNameFromPartnerID(partnerID);
-                if(conName != null) con.conversationName = conName;
+                if(conName != null) con.setConversationName(conName);
             }
-        } else if(conObj.get("name") != null) con.conversationName = conObj.get("name").toString();
+        } else if(conObj.get("name") != null) con.setConversationName(conObj.get("name").toString());
         if(conObj.get("team") != null) con.team = conObj.get("team").toString();
         con.id = conObj.get("id").toString();
         if(conObj.get("receipt_mode") != null) con.receipt_mode = conObj.get("receipt_mode").toString();
@@ -137,9 +137,24 @@ public class WireConversations implements IConversations
 
         return person;
     }
-    private static String getNameFromPartnerID(String userID)
+    private static String getNameFromPartnerID(String userID) throws ParseException
     {
-        //TODO: Get name of specified user
+        String url = URL.WIRE + URL.WIRE_USERS + URL.wireBearerToken() + "&ids=" + userID;
+        String[] headers = new String[]{
+                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+        HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
+
+        if(response == null) Outputs.create("Could not get a username", "WireConversations").verbose().WARNING().print();
+        else if(response.statusCode() == 200)
+        {
+            JSONArray arr = (JSONArray) new JSONParser().parse(response.body());
+            if(arr.size() > 0)
+            {
+                JSONObject user = (JSONObject) arr.get(0);
+                return user.get("name").toString();
+            } else Outputs.create("No user returned", "WireConversations").debug().WARNING().print();
+        } else Outputs.create("Response code of getting user was " + response.statusCode()).verbose().WARNING().print();
+
         return userID;
     }
 }

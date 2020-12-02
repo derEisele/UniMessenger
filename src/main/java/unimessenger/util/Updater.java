@@ -16,6 +16,7 @@ public class Updater implements Runnable
     public void run()
     {
         runningServices = new ArrayList<>();
+        int seconds = 0;
 
         while(!Thread.interrupted())
         {
@@ -24,8 +25,8 @@ public class Updater implements Runnable
                 if(validateAccess(service))
                 {
                     APIAccess access = new APIAccess();
-                    access.getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
-                    if(!access.getMessageInterface(service).receiveNewMessages())//TODO: Might need to change to /await
+                    if(seconds % 10 == 0) access.getConversationInterface(service).requestAllConversations();//TODO: Refresh only changed conversations if possible
+                    if(seconds % 2 == 0 && !access.getMessageInterface(service).receiveNewMessages())//TODO: Might need to change to /await
                     {
                         Outputs.create("Error receiving new messages", this.getClass().getName()).verbose().WARNING().print();
                     }
@@ -33,11 +34,13 @@ public class Updater implements Runnable
             }
             try
             {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch(InterruptedException ignored)
             {
                 return;
             }
+            seconds++;
+            if(seconds >= 60) seconds = 0;
         }
     }
 

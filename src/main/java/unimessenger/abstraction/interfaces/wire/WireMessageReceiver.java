@@ -110,7 +110,7 @@ public class WireMessageReceiver
 
         if(decryptedMsg.equals("") && WireStorage.getConversationByID(conversationID) != null)
         {
-            Outputs.create("You have been pinged! Chat: " + WireStorage.getConversationByID(conversationID).conversationName).always().ALERT().print();
+            Outputs.create("You have been pinged! Chat: " + WireStorage.getConversationByID(conversationID).getConversationName()).always().ALERT().print();
             decryptedMsg = "PING!";
         }
 

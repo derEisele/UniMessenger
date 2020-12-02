@@ -1,0 +1,63 @@
+[
+  {
+    "handle": "kaiwie",
+    "locale": "de-DE",
+    "accent_id": 4,
+    "picture": [],
+    "name": "Kai Wiest",
+    "id": "49596e30-1c8d-4ac2-8009-431368f24469",
+    "assets": [
+      {
+        "size": "preview",
+        "key": "3-1-8e95f54a-b2da-4616-8812-590fa7a05a0d",
+        "type": "image"
+      },
+      {
+        "size": "complete",
+        "key": "3-1-21958273-d4af-4d0c-b619-afdf0603517e",
+        "type": "image"
+      }
+    ]
+  },
+  {
+    "handle": "fi0x",
+    "locale": "en-US",
+    "accent_id": 2,
+    "picture": [],
+    "name": "Felix P.",
+    "id": "e22e08fe-083a-464b-bd39-606b25771da4",
+    "assets": [
+      {
+        "size": "complete",
+        "key": "3-1-8d0354a4-7339-4153-973d-0e9888b50af7",
+        "type": "image"
+      },
+      {
+        "size": "preview",
+        "key": "3-1-8d0354a4-7339-4153-973d-0e9888b50af7",
+        "type": "image"
+      }
+    ]
+  },
+  {
+    "handle": "sophiaochs",
+    "locale": "en-US",
+    "accent_id": 5,
+    "picture": [],
+    "name": "sophiaochs",
+    "id": "3a36f536-1d3a-4148-a938-689056dab2c5",
+    "assets": [
+      {
+        "size": "preview",
+        "key": "3-1-273faa91-d2c4-4777-aaef-fd220832c6b2",
+        "type": "image"
+      },
+      {
+        "size": "complete",
+        "key": "3-1-9d43580a-f5e7-45e6-a5e4-e2e32dc2536f",
+        "type": "image"
+      }
+    ]
+  }
+]
+
