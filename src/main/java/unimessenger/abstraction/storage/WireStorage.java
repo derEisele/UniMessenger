@@ -2,8 +2,8 @@ package unimessenger.abstraction.storage;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
-import unimessenger.abstraction.storage.MessengerStructure.WireProfile;
+import unimessenger.abstraction.wire.structures.WireConversation;
+import unimessenger.abstraction.wire.structures.WireProfile;
 import unimessenger.userinteraction.Outputs;
 
 import java.io.File;

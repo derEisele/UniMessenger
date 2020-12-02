@@ -1,26 +1,15 @@
 package unimessenger.userinteraction.menu;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.APIAccess;
-import unimessenger.abstraction.Headers;
-import unimessenger.abstraction.URL;
-import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
 import unimessenger.abstraction.interfaces.IData;
-import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Inputs;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.Updater;
 import unimessenger.util.enums.MENU;
-import unimessenger.util.enums.REQUEST;
 import unimessenger.util.enums.SERVICE;
 
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class MenuConversationList
 {
@@ -31,7 +20,6 @@ public class MenuConversationList
         System.out.println("3) Log out of '" + CLI.currentService + "'");
         System.out.println("4) Show Main Menu");
         System.out.println("5) Exit Program");
-        System.out.println("10) Receive last notification");//TODO: Remove
 
         int userInput = Inputs.getIntAnswerFrom("Please enter the number of the option you would like to choose.");
         switch(userInput)
@@ -51,9 +39,6 @@ public class MenuConversationList
                 break;
             case 5:
                 CLI.currentMenu = MENU.EXIT;
-                break;
-            case 10:
-                receiveLastNotification();
                 break;
             default:
                 Outputs.create("Invalid option").always().WARNING().print();
@@ -127,34 +112,5 @@ public class MenuConversationList
 
         System.out.println("There was a logout error");
         return false;
-    }
-
-    @Deprecated
-    private static void receiveLastNotification()
-    {
-        String url = URL.WIRE + URL.WIRE_NOTIFICATIONS + "/last" + URL.wireBearerToken();
-        String[] headers = new String[]{
-                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
-        HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
-
-        System.out.println("Code: " + response.statusCode());
-        System.out.println("Body: " + response.body());
-
-        String decryptedMsg = null;
-        try
-        {
-            JSONObject all = (JSONObject) new JSONParser().parse(response.body());
-            JSONArray payloads = (JSONArray) all.get("payload");
-            JSONObject payload = (JSONObject) payloads.get(0);
-            JSONObject data = (JSONObject) payload.get("data");
-            System.out.println("From: " + payload.get("from").toString());
-            System.out.println("Sender: " + data.get("sender").toString());
-            System.out.println("Text: " + data.get("text").toString());
-            decryptedMsg = WireCryptoHandler.decrypt(UUID.fromString(payload.get("from").toString()), data.get("sender").toString(), data.get("text").toString());
-        } catch(ParseException e)
-        {
-            e.printStackTrace();
-        }
-        System.out.println("Decrypted: " + decryptedMsg);
     }
 }

@@ -1,4 +1,4 @@
-package unimessenger.abstraction.storage.MessengerStructure;
+package unimessenger.abstraction.wire.structures;
 
 import unimessenger.abstraction.storage.Message;
 import unimessenger.util.enums.CONVERSATIONTYPE;

@@ -2,9 +2,9 @@ package unimessenger.abstraction.interfaces.wire;
 
 import unimessenger.abstraction.interfaces.IData;
 import unimessenger.abstraction.storage.Message;
-import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
-import unimessenger.abstraction.storage.MessengerStructure.WirePerson;
 import unimessenger.abstraction.storage.WireStorage;
+import unimessenger.abstraction.wire.structures.WireConversation;
+import unimessenger.abstraction.wire.structures.WirePerson;
 import unimessenger.userinteraction.Outputs;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package unimessenger.abstraction.storage;
 
-import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
+import unimessenger.abstraction.wire.structures.WireConversation;
 import unimessenger.userinteraction.Outputs;
 
 import java.io.*;

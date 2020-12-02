@@ -5,6 +5,7 @@ import unimessenger.abstraction.interfaces.IData;
 import unimessenger.abstraction.interfaces.IMessages;
 import unimessenger.abstraction.interfaces.wire.WireMessageSender;
 import unimessenger.abstraction.storage.Message;
+import unimessenger.abstraction.wire.crypto.MessageCreator;
 import unimessenger.userinteraction.CLI;
 import unimessenger.userinteraction.Inputs;
 import unimessenger.userinteraction.Outputs;
@@ -49,7 +50,7 @@ public class MenuChat
                 break;
             case 6:
                 //TODO: Fix to send correct ping message
-                if(CLI.currentService == SERVICE.WIRE) new WireMessageSender().sendMessage(CLI.currentChatID, "");
+                if(CLI.currentService == SERVICE.WIRE) new WireMessageSender().sendMessage(CLI.currentChatID, MessageCreator.createGenericPingMessage());
                 break;
             default:
                 Outputs.create("Invalid option").always().WARNING().print();
@@ -70,7 +71,7 @@ public class MenuChat
         //TODO: Add timed messages
 
         IMessages msg = new APIAccess().getMessageInterface(CLI.currentService);
-        return msg.sendMessage(CLI.currentChatID, text);
+        return msg.sendTextMessage(CLI.currentChatID, text);
     }
     private static void showMessages()
     {

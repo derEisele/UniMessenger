@@ -1,15 +1,17 @@
 package unimessenger.abstraction.interfaces.wire;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.waz.model.Messages;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
-import unimessenger.abstraction.encryption.WireCrypto.WireCryptoHandler;
 import unimessenger.abstraction.storage.Message;
-import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
 import unimessenger.abstraction.storage.WireStorage;
+import unimessenger.abstraction.wire.crypto.WireCryptoHandler;
+import unimessenger.abstraction.wire.structures.WireConversation;
 import unimessenger.communication.HTTP;
 import unimessenger.userinteraction.Outputs;
 import unimessenger.util.enums.REQUEST;
@@ -70,7 +72,7 @@ public class WireMessageReceiver
         String conversationID;
         String senderUser = null;
         Timestamp time = null;
-        String decryptedMsg;
+        Messages.GenericMessage message;
 
         if(payload.containsKey("conversation")) conversationID = payload.get("conversation").toString();
         else
@@ -106,18 +108,24 @@ public class WireMessageReceiver
             return false;
         }
 
-        decryptedMsg = WireCryptoHandler.decrypt(UUID.fromString(payload.get("from").toString()), data.get("sender").toString(), data.get("text").toString());
-
-        if(decryptedMsg.equals("") && WireStorage.getConversationByID(conversationID) != null)
+        byte[] decrypted = WireCryptoHandler.decrypt(UUID.fromString(payload.get("from").toString()), data.get("sender").toString(), data.get("text").toString());
+        try
         {
-            Outputs.create("You have been pinged! Chat: " + WireStorage.getConversationByID(conversationID).getConversationName()).always().ALERT().print();
-            decryptedMsg = "PING!";
+            message = Messages.GenericMessage.parseFrom(decrypted);
+        } catch(InvalidProtocolBufferException e)
+        {
+            Outputs.create("Unabled to parse to a generic message", this.getClass().getName()).debug().WARNING().print();
+            return false;
         }
 
-        WireConversation conversation = WireStorage.getConversationByID(conversationID);
-        Message msg = new Message(decryptedMsg, time, senderUser);
-        if(conversation != null) conversation.addMessage(msg);
-        else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+        if(message.hasKnock() && WireStorage.getConversationByID(conversationID) != null) Outputs.create("You have been pinged in: '" + WireStorage.getConversationByID(conversationID).getConversationName() + "'").always().ALERT().print();
+        else if(message.hasText())
+        {
+            WireConversation conversation = WireStorage.getConversationByID(conversationID);
+            Message msg = new Message(message.getText().getContent(), time, senderUser);
+            if(conversation != null) conversation.addMessage(msg);
+            else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+        } else Outputs.create("Unknown message type received").verbose().INFO().print();
 
         return true;
     }

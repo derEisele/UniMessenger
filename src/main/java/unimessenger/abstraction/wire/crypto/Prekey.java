@@ -1,4 +1,4 @@
-package unimessenger.abstraction.encryption.WireCrypto;
+package unimessenger.abstraction.wire.crypto;
 
 import com.wire.bots.cryptobox.PreKey;
 

@@ -1,8 +1,8 @@
 package unimessenger.util;
 
 import unimessenger.Main;
-import unimessenger.abstraction.encryption.WireCrypto.CryptoFactory;
 import unimessenger.abstraction.storage.WireStorage;
+import unimessenger.abstraction.wire.crypto.CryptoFactory;
 import unimessenger.userinteraction.Outputs;
 
 public class Stop implements Runnable
