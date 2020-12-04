@@ -19,7 +19,8 @@ public class ConversationHandler implements Serializable
 
     public static void clearFile()
     {
-        //TODO: Delete or overwrite file
+        new File(FILEPATH).delete();
+
     }
 
     public ArrayList<WireConversation> getConversations()

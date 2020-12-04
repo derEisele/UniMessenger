@@ -29,6 +29,11 @@ public class Main
         Outputs.create("Initializing storage...").verbose().INFO().print();
         WireStorage.init();
         Outputs.create("Storage initialized").verbose().INFO().print();
+
+        Outputs.create("Asking for password from user for FileVault").verbose().INFO().print();
+        CLI.preRun();
+        Outputs.create("Decrypting fileVault").verbose().INFO().print();
+
         Outputs.create("Loading login files...").verbose().INFO().print();
         WireStorage.readDataFromFiles();
         Outputs.create("File-loading finished").verbose().INFO().print();
