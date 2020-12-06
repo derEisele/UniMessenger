@@ -50,3 +50,4 @@ Planned messengers are Wire, Telegram and WhatsApp, with the priority on Wire.
 - [Test API](https://jsonplaceholder.typicode.com/)
 - [StackOverflow](https://stackoverflow.com/)
 - [Baeldung](https://www.baeldung.com/)
+- [CSS in fxml files](https://www.callicoder.com/javafx-css-tutorial/)

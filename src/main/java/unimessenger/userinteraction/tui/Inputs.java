@@ -1,4 +1,4 @@
-package unimessenger.userinteraction;
+package unimessenger.userinteraction.tui;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

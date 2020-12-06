@@ -1,12 +1,12 @@
-package unimessenger.userinteraction;
+package unimessenger.userinteraction.tui;
 
 import unimessenger.Main;
 import unimessenger.abstraction.APIAccess;
 import unimessenger.abstraction.interfaces.IData;
-import unimessenger.userinteraction.menu.MenuChat;
-import unimessenger.userinteraction.menu.MenuConversationList;
-import unimessenger.userinteraction.menu.MenuLogin;
-import unimessenger.userinteraction.menu.MenuMain;
+import unimessenger.userinteraction.tui.menu.MenuChat;
+import unimessenger.userinteraction.tui.menu.MenuConversationList;
+import unimessenger.userinteraction.tui.menu.MenuLogin;
+import unimessenger.userinteraction.tui.menu.MenuMain;
 import unimessenger.util.enums.MENU;
 import unimessenger.util.enums.SERVICE;
 

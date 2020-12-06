@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TabPane?>
+<?import java.net.URL?>
+<ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="unimessenger.userinteraction.gui.controller.MainController">
+    <TabPane fx:id="tpMain" />
+    <stylesheets>
+        <URL value="@../css/main.css"/>
+    </stylesheets>
+</ScrollPane>

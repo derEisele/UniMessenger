@@ -11,7 +11,7 @@ import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.abstraction.wire.structures.WireConversation;
 import unimessenger.abstraction.wire.structures.WirePerson;
 import unimessenger.communication.HTTP;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.enums.CONVERSATIONTYPE;
 import unimessenger.util.enums.REQUEST;
 

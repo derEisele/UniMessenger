@@ -3,7 +3,7 @@ package unimessenger.abstraction.interfaces.wire;
 import com.waz.model.Messages;
 import unimessenger.abstraction.storage.Message;
 import unimessenger.abstraction.wire.structures.WireConversation;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.enums.MESSAGETYPE;
 
 import java.sql.Timestamp;

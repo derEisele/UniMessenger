@@ -40,20 +40,9 @@ public class MessageText implements IGeneric
         return messageId;
     }
 
-    public Messages.Text.Builder getBuilder()
-    {
-        return builder;
-    }
-
     public MessageText(String text)
     {
         setText(text);
-    }
-
-    public MessageText setExpectsReadConfirmation(boolean value)
-    {
-        builder.setExpectsReadConfirmation(value);
-        return this;
     }
 
     public MessageText setText(String text)

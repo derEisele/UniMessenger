@@ -1,4 +1,4 @@
-package unimessenger.userinteraction;
+package unimessenger.userinteraction.tui;
 
 import unimessenger.Main;
 

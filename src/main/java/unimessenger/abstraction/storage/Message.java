@@ -20,14 +20,13 @@ public class Message implements Serializable
     {
         return time;
     }
-
     public String getText()
     {
         return text;
     }
-
     public String getSenderID()
     {
         return senderID;
     }
+
 }

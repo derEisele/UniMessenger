@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import unimessenger.abstraction.wire.structures.WireConversation;
 import unimessenger.abstraction.wire.structures.WireProfile;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -85,6 +85,7 @@ public class WireStorage
             convH.newConversation(c);
         }
         ConversationHandler.save();
+        Outputs.create("Conversations stored on disk").verbose().INFO().print();
     }
 
     public static void saveDataInFile()
@@ -153,8 +154,8 @@ public class WireStorage
             FileWriter fw = new FileWriter(storageFile);
             fw.write("{}");
             fw.close();
-            new File(storageFile).delete();
             Outputs.create("Successfully cleared Wire file").verbose().INFO().print();
+            if(new File(storageFile).delete()) Outputs.create("Successfully deleted Wire file").verbose().INFO().print();
         } catch(IOException ignored)
         {
             Outputs.create("Could not clear Wire file", "Wire Storage").debug().WARNING().print();

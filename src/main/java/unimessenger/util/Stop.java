@@ -3,7 +3,7 @@ package unimessenger.util;
 import unimessenger.Main;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.abstraction.wire.crypto.CryptoFactory;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 
 public class Stop implements Runnable
 {
@@ -17,6 +17,10 @@ public class Stop implements Runnable
         Outputs.create("Stopping CLI thread...").verbose().INFO().print();
         Main.cli.interrupt();
         Outputs.create("CLI thread stopped").verbose().INFO().print();
+
+        Outputs.create("Stopping GUI thread...").verbose().INFO().print();
+        Main.gui.stop();
+        Outputs.create("GUI thread stopped").verbose().INFO().print();
 
         Outputs.create("Writing data to file...").verbose().INFO().print();
         WireStorage.saveDataInFile();
