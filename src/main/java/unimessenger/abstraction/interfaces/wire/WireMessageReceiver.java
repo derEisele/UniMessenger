@@ -8,7 +8,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
-import unimessenger.abstraction.storage.Message;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.abstraction.wire.crypto.WireCryptoHandler;
 import unimessenger.abstraction.wire.structures.WireConversation;
@@ -29,8 +28,8 @@ public class WireMessageReceiver
         String token = URL.wireBearerToken();
         String url = URL.WIRE + URL.WIRE_NOTIFICATIONS + client + since + token;
         String[] headers = new String[]{
-                Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
-                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+                Headers.CONTENT, Headers.JSON,
+                Headers.ACCEPT, Headers.JSON};
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null)
@@ -50,7 +49,7 @@ public class WireMessageReceiver
                         JSONObject load = (JSONObject) pl;
                         if(load.get("type").equals("conversation.otr-message-add"))
                         {
-                            if(!receiveMessageText(load)) Outputs.create("Error receiving text of a notification").verbose().WARNING().print();
+                            if(!handleMessage(load)) Outputs.create("Error receiving text of a notification").verbose().WARNING().print();
                         }
                     }
                 }
@@ -67,7 +66,7 @@ public class WireMessageReceiver
         return false;
     }
 
-    private boolean receiveMessageText(JSONObject payload)
+    private boolean handleMessage(JSONObject payload)
     {
         String conversationID;
         String senderUser = null;
@@ -114,19 +113,18 @@ public class WireMessageReceiver
             message = Messages.GenericMessage.parseFrom(decrypted);
         } catch(InvalidProtocolBufferException e)
         {
-            Outputs.create("Unabled to parse to a generic message", this.getClass().getName()).debug().WARNING().print();
+            Outputs.create("Unable to parse to a generic message", this.getClass().getName()).debug().WARNING().print();
             return false;
         }
 
-        if(message.hasKnock() && WireStorage.getConversationByID(conversationID) != null) Outputs.create("You have been pinged in: '" + WireStorage.getConversationByID(conversationID).getConversationName() + "'").always().ALERT().print();
-        else if(message.hasText())
+        WireConversation conversation = WireStorage.getConversationByID(conversationID);
+        if(conversation == null)
         {
-            WireConversation conversation = WireStorage.getConversationByID(conversationID);
-            Message msg = new Message(message.getText().getContent(), time, senderUser);
-            if(conversation != null) conversation.addMessage(msg);
-            else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
-        } else Outputs.create("Unknown message type received").verbose().INFO().print();
+            Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+            return false;
+        }
 
-        return true;
+        senderUser = WireConversations.getNameFromUserID(senderUser);
+        return WireMessageSorter.handleReceivedMessage(message, conversation, time, senderUser);
     }
 }

@@ -50,8 +50,8 @@ public class WireLogin implements ILoginOut
         String body = obj.toJSONString();
 
         String[] headers = new String[]{
-                Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
-                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+                Headers.CONTENT, Headers.JSON,
+                Headers.ACCEPT, Headers.JSON};
 
         return handleResponse(new HTTP().sendRequest(url, REQUEST.POST, body, headers));
     }
@@ -62,8 +62,8 @@ public class WireLogin implements ILoginOut
         String url = URL.WIRE + URL.WIRE_LOGOUT + URL.wireBearerToken();
         String[] headers = new String[]{
                 "cookie", WireStorage.cookie,
-                Headers.CONTENT_JSON[0], Headers.CONTENT_JSON[1],
-                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+                Headers.CONTENT, Headers.JSON,
+                Headers.ACCEPT, Headers.JSON};
 
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, "", headers);
 

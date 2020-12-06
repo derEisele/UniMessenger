@@ -24,7 +24,7 @@ public class WireConversations implements IConversations
     {
         String url = URL.WIRE + URL.WIRE_CONVERSATIONS + URL.wireBearerToken();
         String[] headers = new String[]{
-                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+                Headers.ACCEPT, Headers.JSON};
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null)
@@ -97,7 +97,7 @@ public class WireConversations implements IConversations
             if(con.members.size() > 1 && con.members.get(1) != null)
             {
                 String partnerID = con.members.get(1).id;
-                String conName = getNameFromPartnerID(partnerID);
+                String conName = getNameFromUserID(partnerID);
                 if(conName != null) con.setConversationName(conName);
             }
         } else if(conObj.get("name") != null) con.setConversationName(conObj.get("name").toString());
@@ -137,17 +137,23 @@ public class WireConversations implements IConversations
 
         return person;
     }
-    private static String getNameFromPartnerID(String userID) throws ParseException
+    public static String getNameFromUserID(String userID)
     {
         String url = URL.WIRE + URL.WIRE_USERS + URL.wireBearerToken() + "&ids=" + userID;
         String[] headers = new String[]{
-                Headers.ACCEPT_JSON[0], Headers.ACCEPT_JSON[1]};
+                Headers.ACCEPT, Headers.JSON};
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.GET, "", headers);
 
         if(response == null) Outputs.create("Could not get a username", "WireConversations").verbose().WARNING().print();
         else if(response.statusCode() == 200)
         {
-            JSONArray arr = (JSONArray) new JSONParser().parse(response.body());
+            JSONArray arr = null;
+            try
+            {
+                arr = (JSONArray) new JSONParser().parse(response.body());
+            } catch(ParseException ignored)
+            {
+            }
             if(arr.size() > 0)
             {
                 JSONObject user = (JSONObject) arr.get(0);

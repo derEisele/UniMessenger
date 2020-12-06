@@ -1,0 +1,13 @@
+{
+  "sent file": "E:\\Users\\Fi0x\\Pictures\\Profilbild.png",
+  "with boundary": {
+    "code": 400,
+    "message": "Expected: MIME boundary, -, Failed reading: satisfyWith at 1:1 (0)",
+    "label": "client-error"
+  },
+  "without boundary": {
+    "code": 400,
+    "message": "Expected: MIME boundary, -, Failed reading: satisfyWith at 1:1 (0)",
+    "label": "client-error"
+  }
+}

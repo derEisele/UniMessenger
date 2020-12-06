@@ -20,6 +20,8 @@ public class URL
     public static final String WIRE_OTR_MESSAGES = "/otr/messages";
     public static final String WIRE_NOTIFICATIONS = "/notifications";
 
+    public static final String WIRE_ASSETS = "/assets/v3";
+
     public static String wireBearerToken()
     {
         return "?access_token=" + WireStorage.getBearerToken();

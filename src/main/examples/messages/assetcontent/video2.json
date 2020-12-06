@@ -1,0 +1,26 @@
+{
+  "original": {
+    "mime_type": "video/mp4",
+    "size": 3875696,
+    "name": "VID_20201202_235208.mp4",
+    "video": {
+      "width": 1080,
+      "height": 1920,
+      "duration_in_millis": 3748
+    }
+  },
+  "preview": {
+    "mime_type": "image/jpeg",
+    "size": 12720,
+    "remote": {
+      "otr_key": "T\341\234\227\222i\214\341\3050\250[\33491\204,\357\221\005\315\317>\354\216,\345`\276\225\372\001",
+      "sha256": ".\262\272\2523\355^J\347#z\037\352\267\t\342<\'\n\267\3610\f\211[1\033 0M\375\340",
+      "asset_id": "3-5-8f100ec7-309d-4da3-b0e8-9cb58b0e307c",
+      "asset_token": "wpZokexTYlfJRphJ4rMAKA=="
+    },
+    "image": {
+      "width": 1080,
+      "height": 1920
+    }
+  }
+}

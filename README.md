@@ -19,7 +19,8 @@ Planned messengers are Wire, Telegram and WhatsApp, with the priority on Wire.
 - [Wire REST API Documentation](https://docs.wire.com/understand/api-client-perspective/authentication.html)
 - [Wire Whitepaper](https://wire-docs.wire.com/download/Wire+Security+Whitepaper.pdf)
 - [Wire Developers on GitHub](https://github.com/wireapp)
-- [Java Client on GitHub](https://github.com/wireapp/helium)
+- [Java Client on GitHub](https://github.com/wireapp/lithium)
+- [Server API on GitHub](https://github.com/wireapp/wire-server/blob/597769a5df0d029ec0106205ef939da663f3dbd8/services/brig/src/Brig/Provider/API.hs)
 - [List of Operations](https://staging-nginz-https.zinfra.io/swagger-ui/)
 
 #### Java HTTP

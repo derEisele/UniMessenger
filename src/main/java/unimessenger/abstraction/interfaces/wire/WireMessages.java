@@ -9,6 +9,7 @@ import unimessenger.userinteraction.Outputs;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class WireMessages implements IMessages
 {
@@ -19,15 +20,28 @@ public class WireMessages implements IMessages
     public boolean sendTextMessage(String chatID, String text)
     {
         WireConversation conversation = WireStorage.getConversationByID(chatID);
-        if(conversation != null) conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis()), WireStorage.userID));
-        else Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+        if(conversation != null) conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis()), WireStorage.selfProfile.userName));
+        else
+        {
+            Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+            return false;
+        }
         return sender.sendMessage(chatID, MessageCreator.createGenericTextMessage(text));
     }
     @Override
     public boolean sendFile(String chatID, File file)
     {
-        //TODO: Implement
-        return false;
+        WireConversation conversation = WireStorage.getConversationByID(chatID);
+        if(conversation != null) conversation.addMessage(new Message("FILE", new Timestamp(System.currentTimeMillis()), WireStorage.selfProfile.userName));
+        else
+        {
+            Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+            return false;
+        }
+        UUID id = UUID.randomUUID();
+        boolean previewSent = sender.sendMessage(chatID, MessageCreator.createGenericFilePreviewMessage(file, id));
+        boolean assetSent = sender.sendMessage(chatID, MessageCreator.createGenericFileMessage(file, id));
+        return previewSent && assetSent;
     }
 
     @Override

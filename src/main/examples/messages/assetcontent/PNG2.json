@@ -1,0 +1,17 @@
+{
+  "original": {
+    "mime_type": "image/png",
+    "size": 7618,
+    "image": {
+      "width": 128,
+      "height": 64
+    }
+  },
+  "uploaded": {
+    "otr_key": "\241e/\223uP\'8K\366\035\024\366*\364]\306\220;\263l\351\263\260\257\222Sfr\362\205\231",
+    "sha256": "I\271Q\316\275\373\211\347\306\335\001cv\347(\030X\331=\002e\344\002\215jMz-N\210\330\177",
+    "asset_id": "3-2-41361e1d-e996-4cec-81b9-3429cb8356e9"
+  },
+  "expects_read_confirmation": false,
+  "legal_hold_status": "DISABLED"
+}

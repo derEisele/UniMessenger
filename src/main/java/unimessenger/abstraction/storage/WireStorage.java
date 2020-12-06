@@ -51,6 +51,9 @@ public class WireStorage
         else Outputs.create("Storage folder not created", "WireStorage").debug().WARNING().print();
 
         convH = ConversationHandler.getInstance();
+
+        //Loading the messages and cons into conversations list
+        conversations = convH.getConversations();
     }
 
     public static void saveDataInFile(String accessCookie)
