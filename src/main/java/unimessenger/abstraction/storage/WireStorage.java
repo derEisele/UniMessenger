@@ -2,12 +2,11 @@ package unimessenger.abstraction.storage;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
-import unimessenger.abstraction.storage.MessengerStructure.WireProfile;
+import unimessenger.abstraction.wire.structures.WireConversation;
+import unimessenger.abstraction.wire.structures.WireProfile;
 import unimessenger.userinteraction.Outputs;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -24,6 +23,8 @@ public class WireStorage
     public static Timestamp lastNotification;
     public static WireProfile selfProfile;
     public static ArrayList<WireConversation> conversations;
+
+    private static StorageCrypto storageCrypto;
 
     public static String storageDirectory;
     private static String storageFile;
@@ -50,6 +51,9 @@ public class WireStorage
         else Outputs.create("Storage folder not created", "WireStorage").debug().WARNING().print();
 
         convH = ConversationHandler.getInstance();
+
+        //Loading the messages and cons into conversations list
+        conversations = convH.getConversations();
     }
 
     public static void saveDataInFile(String accessCookie)
@@ -67,11 +71,9 @@ public class WireStorage
 
             try
             {
-                FileWriter fw = new FileWriter(storageFile);
-                fw.write(obj.toJSONString());
-                fw.close();
+                storageCrypto.encrypt(obj.toJSONString());
                 Outputs.create("Successfully wrote to Wire file").verbose().INFO().print();
-            } catch(IOException ignored)
+            } catch(Exception ignored)
             {
                 Outputs.create("Could not write to Wire file", "WireStorage").debug().WARNING().print();
             }
@@ -125,12 +127,15 @@ public class WireStorage
     {
         try
         {
-            JSONObject obj = (JSONObject) new JSONParser().parse(new FileReader(storageFile));
+            storageCrypto = new StorageCrypto();
+
+            JSONObject obj = (JSONObject) new JSONParser().parse(storageCrypto.decrypt());
             cookie = obj.get("accessCookie").toString();
             bearerToken = obj.get("bearerToken").toString();
             bearerExpiringTime = new Timestamp((long) obj.get("bearerTime"));
             clientID = obj.get("clientID").toString();
             lastNotification = new Timestamp((long) obj.get("lastNotification"));
+
 
             //Loading the messages and cons into conversations list
             conversations = convH.getConversations();
@@ -148,6 +153,7 @@ public class WireStorage
             FileWriter fw = new FileWriter(storageFile);
             fw.write("{}");
             fw.close();
+            new File(storageFile).delete();
             Outputs.create("Successfully cleared Wire file").verbose().INFO().print();
         } catch(IOException ignored)
         {

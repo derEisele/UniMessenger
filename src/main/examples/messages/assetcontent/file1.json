@@ -1,0 +1,9 @@
+{
+  "original": {
+    "mime_type": "application/json",
+    "size": 1071,
+    "name": "clientsResponseBody.json"
+  },
+  "expects_read_confirmation": false,
+  "legal_hold_status": "DISABLED"
+}

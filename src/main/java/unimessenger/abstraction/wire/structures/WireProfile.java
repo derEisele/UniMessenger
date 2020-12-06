@@ -1,4 +1,4 @@
-package unimessenger.abstraction.storage.MessengerStructure;
+package unimessenger.abstraction.wire.structures;
 
 import java.util.ArrayList;
 

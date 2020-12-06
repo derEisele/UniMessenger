@@ -1,0 +1,12 @@
+{
+  "original": {
+    "mime_type": "video/mp4",
+    "size": 3875696,
+    "name": "VID_20201202_235208.mp4",
+    "video": {
+      "width": 1080,
+      "height": 1920,
+      "duration_in_millis": 3748
+    }
+  }
+}

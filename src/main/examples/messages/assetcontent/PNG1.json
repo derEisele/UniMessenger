@@ -1,0 +1,13 @@
+{
+  "original": {
+    "mime_type": "image/png",
+    "size": 1140,
+    "name": "moon_phases.png",
+    "image": {
+      "width": 128,
+      "height": 64
+    }
+  },
+  "expects_read_confirmation": false,
+  "legal_hold_status": "DISABLED"
+}

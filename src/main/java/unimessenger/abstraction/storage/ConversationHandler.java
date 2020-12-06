@@ -1,6 +1,6 @@
 package unimessenger.abstraction.storage;
 
-import unimessenger.abstraction.storage.MessengerStructure.WireConversation;
+import unimessenger.abstraction.wire.structures.WireConversation;
 import unimessenger.userinteraction.Outputs;
 
 import java.io.*;
@@ -12,14 +12,15 @@ public class ConversationHandler implements Serializable
     private static final String FILEPATH = WireStorage.storageDirectory + "/Chats";
     private ArrayList<WireConversation> conversations;
 
-    public ConversationHandler()
+    private ConversationHandler()
     {
         conversations = new ArrayList<>();
     }
 
     public static void clearFile()
     {
-        //TODO: Delete or overwrite file
+        new File(FILEPATH).delete();
+
     }
 
     public ArrayList<WireConversation> getConversations()

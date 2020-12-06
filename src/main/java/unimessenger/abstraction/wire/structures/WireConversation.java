@@ -1,4 +1,4 @@
-package unimessenger.abstraction.storage.MessengerStructure;
+package unimessenger.abstraction.wire.structures;
 
 import unimessenger.abstraction.storage.Message;
 import unimessenger.util.enums.CONVERSATIONTYPE;
@@ -12,7 +12,7 @@ public class WireConversation implements Serializable
     public String creatorID;
     public String accessRole;
     public ArrayList<WirePerson> members;
-    public String conversationName;
+    private String conversationName;
     public String team;
     public String id;
     public CONVERSATIONTYPE conversationType;
@@ -66,6 +66,7 @@ public class WireConversation implements Serializable
     }
     public ArrayList<Message> getMessages()
     {
+        if(newMessages.size() > 0) getNewMessages();
         return messages;
     }
     public ArrayList<Message> getNewMessages()
@@ -79,5 +80,13 @@ public class WireConversation implements Serializable
             newMessages.remove(0);
         }
         return msgs;
+    }
+    public String getConversationName()
+    {
+        return conversationName;
+    }
+    public void setConversationName(String conversationName)
+    {
+        this.conversationName = conversationName;
     }
 }
