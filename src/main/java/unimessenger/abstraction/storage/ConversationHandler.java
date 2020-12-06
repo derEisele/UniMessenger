@@ -45,7 +45,6 @@ public class ConversationHandler implements Serializable
             try(FileInputStream fis = new FileInputStream(FILEPATH); ObjectInputStream ois = new ObjectInputStream(fis))
             {
                 cH = (ConversationHandler) ois.readObject();
-                System.err.println("Read: " +cH.getConversations().size() +" Chats");
             } catch(IOException | ClassNotFoundException ex)
             {
                 Outputs.create("ConnectionHandler not on disc or not loaded, Generating new one");
@@ -60,7 +59,6 @@ public class ConversationHandler implements Serializable
     {
         try
         {
-            System.err.println("Saved: " + cH.getConversations().size());
             FileOutputStream fileOut = new FileOutputStream(FILEPATH);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(cH);
