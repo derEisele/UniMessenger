@@ -64,7 +64,8 @@ public class WireMessageSorter
                 break;
             case TIMED:
                 Outputs.create("Timed message received").verbose().INFO().print();
-                //TODO: Handle timed message
+                msg = new Message(message.getEphemeral().getText().getContent(), time, senderUser, message.getEphemeral().getExpireAfterMillis());
+                conversation.addMessage(msg);
                 break;
             case LOCATION:
                 //TODO: Give more information about the location

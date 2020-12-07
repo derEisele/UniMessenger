@@ -20,12 +20,12 @@ public class WireMessages implements IMessages
     public boolean sendTextMessage(String chatID, String text)
     {
         WireConversation conversation = WireStorage.getConversationByID(chatID);
-        if(conversation != null) conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis()), WireStorage.selfProfile.userName));
-        else
+        if(conversation == null)
         {
             Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
             return false;
         }
+        conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis() - (1000 * 60 * 60)), WireStorage.selfProfile.userName));
         return sender.sendMessage(chatID, MessageCreator.createGenericTextMessage(text));
     }
     @Override
@@ -37,6 +37,7 @@ public class WireMessages implements IMessages
             Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
             return false;
         }
+        conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis() - (1000 * 60 * 60)), WireStorage.selfProfile.userName, millis));
         return sender.sendMessage(chatID, MessageCreator.createGenericTimedMessage(text, millis));
     }
     @Override

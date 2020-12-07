@@ -50,11 +50,18 @@ public class ConversationController
             {
                 if(timed)
                 {
-                    msgSender.sendTimedText(messengerController.getCurrentChatID(), txtMessage.getText(), 300 * 1000);
-                } else if(msgSender.sendTextMessage(messengerController.getCurrentChatID(), txtMessage.getText()))
+                    if(msgSender.sendTimedText(messengerController.getCurrentChatID(), txtMessage.getText(), 300 * 1000))
+                    {
+                        ArrayList<Message> sentMsg = access.getDataInterface(tabController.getService()).getLastXMessagesFromConversation(messengerController.getCurrentChatID(), 1);
+                        if(!sentMsg.isEmpty()) addChatMessage(sentMsg.get(0));
+                    }
+                } else
                 {
-                    ArrayList<Message> sentMsg = access.getDataInterface(tabController.getService()).getLastXMessagesFromConversation(messengerController.getCurrentChatID(), 1);
-                    if(!sentMsg.isEmpty()) addChatMessage(sentMsg.get(0));
+                    if(msgSender.sendTextMessage(messengerController.getCurrentChatID(), txtMessage.getText()))
+                    {
+                        ArrayList<Message> sentMsg = access.getDataInterface(tabController.getService()).getLastXMessagesFromConversation(messengerController.getCurrentChatID(), 1);
+                        if(!sentMsg.isEmpty()) addChatMessage(sentMsg.get(0));
+                    }
                 }
             }
         }

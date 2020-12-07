@@ -67,6 +67,9 @@ public class WireConversation implements Serializable
     public ArrayList<Message> getMessages()
     {
         if(newMessages.size() > 0) getNewMessages();
+
+        messages.removeIf(message -> !message.isValid());
+
         return messages;
     }
     public ArrayList<Message> getNewMessages()
