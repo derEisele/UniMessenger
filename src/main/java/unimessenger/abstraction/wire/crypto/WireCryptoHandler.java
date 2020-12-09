@@ -3,7 +3,7 @@ package unimessenger.abstraction.wire.crypto;
 import com.wire.bots.cryptobox.CryptoBox;
 import com.wire.bots.cryptobox.CryptoException;
 import com.wire.bots.cryptobox.PreKey;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 
 import java.util.Base64;
 import java.util.UUID;

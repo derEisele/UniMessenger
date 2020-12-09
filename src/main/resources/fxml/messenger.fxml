@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="unimessenger.userinteraction.gui.controller.MessengerController">
+    <VBox maxWidth="500.0" minWidth="300.0">
+        <HBox alignment="CENTER_RIGHT">
+            <Label alignment="TOP_LEFT" contentDisplay="CENTER" text="Conversations"/>
+            <MenuButton mnemonicParsing="false" text="General Settings">
+                <items>
+                    <MenuItem mnemonicParsing="false" text="Show Profile"/>
+                    <MenuItem mnemonicParsing="false" text="Settings"/>
+                    <MenuItem mnemonicParsing="false" onAction="#logout" text="Log out"/>
+                </items>
+            </MenuButton>
+        </HBox>
+        <TextField promptText="Search for Conversation"/>
+        <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+            <Tab text="Contacts">
+                <AnchorPane>
+                    <ScrollPane>
+                        <AnchorPane/>
+                    </ScrollPane>
+                </AnchorPane>
+            </Tab>
+            <Tab text="Conversations">
+                <AnchorPane fx:id="conversationListAnchor"/>
+            </Tab>
+            <Tab text="Archived">
+                <AnchorPane>
+                    <ScrollPane>
+                        <AnchorPane/>
+                    </ScrollPane>
+                </AnchorPane>
+            </Tab>
+        </TabPane>
+    </VBox>
+    <AnchorPane fx:id="conversationAnchor"/>
+    <stylesheets>
+        <URL value="@../css/messenger.css"/>
+    </stylesheets>
+</HBox>

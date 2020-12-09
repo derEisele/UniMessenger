@@ -1,9 +1,11 @@
 package unimessenger;
 
 import unimessenger.abstraction.storage.WireStorage;
-import unimessenger.userinteraction.CLI;
-import unimessenger.userinteraction.Outputs;
-import unimessenger.userinteraction.menu.MenuDiskCrypto;
+import unimessenger.userinteraction.gui.MainWindow;
+import unimessenger.userinteraction.tui.CLI;
+import unimessenger.userinteraction.tui.Inputs;
+import unimessenger.userinteraction.tui.Outputs;
+import unimessenger.userinteraction.tui.menu.MenuDiskCrypto;
 import unimessenger.util.Stop;
 import unimessenger.util.Updater;
 
@@ -16,6 +18,7 @@ public class Main
     public static boolean verbose = false;
 
     public static Thread cli;
+    public static Thread gui;
     public static Thread updt;
     public static Thread stp;
 
@@ -52,9 +55,33 @@ public class Main
         updt.start();
         Outputs.create("Updater thread started").verbose().INFO().print();
 
-        Outputs.create("Starting CLI thread").verbose().INFO().print();
-        cli.start();
-        Outputs.create("CLI thread started").verbose().INFO().print();
+        Outputs.create("Creating new Thread for CLI...").verbose().INFO().print();
+        cli = new Thread(new CLI());
+        Outputs.create("CLI thread created").verbose().INFO().print();
+
+        Outputs.create("Creating new Thread for GUI...").verbose().INFO().print();
+        gui = new Thread(() -> MainWindow.launch(MainWindow.class, args));
+        Outputs.create("GUI thread created").verbose().INFO().print();
+
+        startUI();
+        Outputs.create("Uni-Messenger started").verbose().INFO().print();
+    }
+
+    private static void startUI()
+    {
+        boolean guib = Inputs.getBoolAnswerFrom("Would you like to use a GUI?");
+
+        if(guib)
+        {
+            Outputs.create("GUI starting...").verbose().INFO().print();
+            gui.start();
+            Outputs.create("GUI started").verbose().INFO().print();
+        } else
+        {
+            Outputs.create("Starting CLI thread").verbose().INFO().print();
+            cli.start();
+            Outputs.create("CLI thread started").verbose().INFO().print();
+        }
 
         Outputs.create("Uni-Messenger started").verbose().INFO().print();
     }

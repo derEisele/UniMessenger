@@ -3,7 +3,7 @@ package unimessenger.abstraction.interfaces.wire;
 import com.waz.model.Messages;
 import unimessenger.abstraction.storage.Message;
 import unimessenger.abstraction.wire.structures.WireConversation;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.enums.MESSAGETYPE;
 
 import java.sql.Timestamp;
@@ -64,7 +64,8 @@ public class WireMessageSorter
                 break;
             case TIMED:
                 Outputs.create("Timed message received").verbose().INFO().print();
-                //TODO: Handle timed message
+                msg = new Message(message.getEphemeral().getText().getContent(), time, senderUser, message.getEphemeral().getExpireAfterMillis());
+                conversation.addMessage(msg);
                 break;
             case LOCATION:
                 //TODO: Give more information about the location

@@ -1,8 +1,8 @@
-package unimessenger.userinteraction.menu;
+package unimessenger.userinteraction.tui.menu;
 
 import unimessenger.abstraction.storage.StorageCrypto;
-import unimessenger.userinteraction.Inputs;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Inputs;
+import unimessenger.userinteraction.tui.Outputs;
 
 import java.security.UnrecoverableKeyException;
 

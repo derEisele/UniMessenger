@@ -8,7 +8,7 @@ import unimessenger.abstraction.Headers;
 import unimessenger.abstraction.URL;
 import unimessenger.abstraction.wire.messages.*;
 import unimessenger.communication.HTTP;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.enums.REQUEST;
 
 import java.io.ByteArrayOutputStream;
@@ -24,6 +24,12 @@ public class MessageCreator
     public static Messages.GenericMessage createGenericTextMessage(String text)
     {
         MessageText msg = new MessageText(text);
+        return msg.createGenericMsg();
+    }
+
+    public static Messages.GenericMessage createGenericTimedMessage(String text, long millis)
+    {
+        MessageEphemeral msg = new MessageEphemeral(text, millis);
         return msg.createGenericMsg();
     }
 
@@ -84,7 +90,6 @@ public class MessageCreator
         sb.append("Content-Type: ").append(asset.getMimeType()).append("\r\n");
         sb.append("Content-Length: ").append(asset.getEncryptedData().length).append("\r\n");
         sb.append("Content-MD5: ").append(Util.calcMd5(asset.getEncryptedData())).append("\r\n\r\n");
-        System.out.println("String: "+ sb.toString());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         os.write(sb.toString().getBytes(StandardCharsets.UTF_8));
         os.write(asset.getEncryptedData());
@@ -96,11 +101,6 @@ public class MessageCreator
                 Headers.ACCEPT, Headers.JSON};
         String body = os.toString();
         HttpResponse<String> response = new HTTP().sendRequest(url, REQUEST.POST, body, headers);
-
-        System.out.println("RESPONSE CODE: " + response.statusCode());
-        System.out.println("Response content: " + response.toString());
-        System.out.println("Response Head: " + response.headers());
-        System.out.println("Response Body: " + response.body());
 
         if(response == null) Outputs.create("No HTTP response received", "MessagesCreator").debug().INFO().print();
         else if(response.statusCode() == 200 || response.statusCode() == 201)

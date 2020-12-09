@@ -1,7 +1,7 @@
 package unimessenger.abstraction.storage;
 
 import unimessenger.abstraction.wire.structures.WireConversation;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 
 import java.io.*;
 import java.util.ArrayList;

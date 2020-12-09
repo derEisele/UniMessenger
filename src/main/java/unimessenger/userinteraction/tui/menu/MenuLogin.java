@@ -1,11 +1,11 @@
-package unimessenger.userinteraction.menu;
+package unimessenger.userinteraction.tui.menu;
 
 import unimessenger.abstraction.APIAccess;
 import unimessenger.abstraction.interfaces.ILoginOut;
 import unimessenger.abstraction.storage.WireStorage;
-import unimessenger.userinteraction.CLI;
-import unimessenger.userinteraction.Inputs;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.CLI;
+import unimessenger.userinteraction.tui.Inputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.Updater;
 import unimessenger.util.enums.MENU;
 import unimessenger.util.enums.SERVICE;

@@ -8,8 +8,8 @@ import unimessenger.abstraction.URL;
 import unimessenger.abstraction.interfaces.ILoginOut;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.communication.HTTP;
-import unimessenger.userinteraction.Inputs;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Inputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpResponse;
@@ -40,7 +40,11 @@ public class WireLogin implements ILoginOut
         String mail = Inputs.getStringAnswerFrom("Please enter your E-Mail");//TestAccount: pechtl97@gmail.com
         String pw = Inputs.getStringAnswerFrom("Please enter your password");//TestAccount: Passwort1!
         WireStorage.persistent = Inputs.getBoolAnswerFrom("Do you want to stay logged in?");
-
+        return login(mail, pw);
+    }
+    @Override
+    public boolean login(String mail, String pw)
+    {
         String url = URL.WIRE + URL.WIRE_LOGIN;
         if(WireStorage.persistent) url += URL.WIRE_PERSIST;
 

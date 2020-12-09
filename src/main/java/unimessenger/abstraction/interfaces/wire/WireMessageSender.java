@@ -11,7 +11,7 @@ import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.abstraction.wire.crypto.Prekey;
 import unimessenger.abstraction.wire.crypto.WireCryptoHandler;
 import unimessenger.communication.HTTP;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.enums.REQUEST;
 
 import java.lang.constant.Constable;

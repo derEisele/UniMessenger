@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="unimessenger.userinteraction.gui.controller.ConversationController">
+    <HBox alignment="CENTER_RIGHT">
+        <Label fx:id="lblConversationName" text="CONVERSATIONNAME"/>
+        <Button mnemonicParsing="false" text="Call"/>
+        <Button mnemonicParsing="false" text="Conversation Settings"/>
+    </HBox>
+    <ScrollPane>
+        <VBox fx:id="chatHistory"/>
+    </ScrollPane>
+    <HBox alignment="CENTER_LEFT">
+        <MenuButton mnemonicParsing="false" text="Special Message">
+            <items>
+                <MenuItem mnemonicParsing="false" text="Voice Message"/>
+                <MenuItem mnemonicParsing="false" text="File"/>
+                <MenuItem fx:id="temporaryMessage" disable="true" mnemonicParsing="false" onAction="#timed" text="Temporary Message"/>
+                <MenuItem fx:id="pingMessage" disable="true" mnemonicParsing="false" onAction="#ping" text="Ping"/>
+            </items>
+        </MenuButton>
+        <TextField fx:id="txtMessage" promptText="Write a message"/>
+        <Button fx:id="btnSendMsg" mnemonicParsing="false" onAction="#sendText" text="Send"/>
+    </HBox>
+    <stylesheets>
+        <URL value="@../css/conversation.css"/>
+    </stylesheets>
+</VBox>

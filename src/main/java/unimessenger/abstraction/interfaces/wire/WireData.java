@@ -5,7 +5,7 @@ import unimessenger.abstraction.storage.Message;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.abstraction.wire.structures.WireConversation;
 import unimessenger.abstraction.wire.structures.WirePerson;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 
 import java.util.ArrayList;
 

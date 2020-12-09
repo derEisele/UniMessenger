@@ -11,8 +11,8 @@ import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.abstraction.wire.crypto.Prekey;
 import unimessenger.abstraction.wire.crypto.WireCryptoHandler;
 import unimessenger.communication.HTTP;
-import unimessenger.userinteraction.Inputs;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Inputs;
+import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.util.enums.REQUEST;
 
 import java.net.http.HttpResponse;
@@ -52,6 +52,7 @@ public class WireUtil implements IUtil
             Outputs.create("Response code is " + response.statusCode() + ". Deleting Wire access cookie...", this.getClass().getName()).debug().ERROR().print();
             WireStorage.cookie = null;
             WireStorage.clearFile();
+            System.out.println("Test");
         }
         return false;
     }
@@ -119,7 +120,7 @@ public class WireUtil implements IUtil
             }
         }
 
-        String pw = Inputs.getStringAnswerFrom("Please enter your password to register this client");
+        String pw = Inputs.getStringAnswerFrom("Please enter your password to register this client");//TODO: Store password somewhere to work with gui
         String id = registerClient(WireStorage.persistent, pw);
         if(id == null)
         {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import java.net.URL?>
+<Tab xmlns:fx="http://javafx.com/fxml/1" id="tab" fx:id="tab" text="New Messenger" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="unimessenger.userinteraction.gui.controller.TabController">
+    <AnchorPane id="anchor" fx:id="anchor">
+        <HBox id="messengerList" alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#wire" text="Wire"/>
+            <Button mnemonicParsing="false" onAction="#telegram" text="Telegram"/>
+        </HBox>
+        <stylesheets>
+            <URL value="@../css/tab.css"/>
+        </stylesheets>
+    </AnchorPane>
+</Tab>

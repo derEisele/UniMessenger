@@ -5,7 +5,7 @@ import unimessenger.abstraction.storage.Message;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.abstraction.wire.crypto.MessageCreator;
 import unimessenger.abstraction.wire.structures.WireConversation;
-import unimessenger.userinteraction.Outputs;
+import unimessenger.userinteraction.tui.Outputs;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -20,13 +20,25 @@ public class WireMessages implements IMessages
     public boolean sendTextMessage(String chatID, String text)
     {
         WireConversation conversation = WireStorage.getConversationByID(chatID);
-        if(conversation != null) conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis()), WireStorage.selfProfile.userName));
-        else
+        if(conversation == null)
         {
             Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
             return false;
         }
+        conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis() - (1000 * 60 * 60)), WireStorage.selfProfile.userName));
         return sender.sendMessage(chatID, MessageCreator.createGenericTextMessage(text));
+    }
+    @Override
+    public boolean sendTimedText(String chatID, String text, long millis)
+    {
+        WireConversation conversation = WireStorage.getConversationByID(chatID);
+        if(conversation == null)
+        {
+            Outputs.create("ConversationID not found", this.getClass().getName()).debug().WARNING().print();
+            return false;
+        }
+        conversation.addMessage(new Message(text, new Timestamp(System.currentTimeMillis() - (1000 * 60 * 60)), WireStorage.selfProfile.userName, millis));
+        return sender.sendMessage(chatID, MessageCreator.createGenericTimedMessage(text, millis));
     }
     @Override
     public boolean sendFile(String chatID, File file)
