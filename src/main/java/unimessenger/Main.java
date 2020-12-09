@@ -3,7 +3,6 @@ package unimessenger;
 import unimessenger.abstraction.storage.WireStorage;
 import unimessenger.userinteraction.gui.MainWindow;
 import unimessenger.userinteraction.tui.CLI;
-import unimessenger.userinteraction.tui.Inputs;
 import unimessenger.userinteraction.tui.Outputs;
 import unimessenger.userinteraction.tui.menu.MenuDiskCrypto;
 import unimessenger.util.Stop;
@@ -69,20 +68,19 @@ public class Main
 
     private static void startUI()
     {
-        boolean guib = Inputs.getBoolAnswerFrom("Would you like to use a GUI?");
-
-        if(guib)
-        {
-            Outputs.create("GUI starting...").verbose().INFO().print();
-            gui.start();
-            Outputs.create("GUI started").verbose().INFO().print();
-        } else
-        {
-            Outputs.create("Starting CLI thread").verbose().INFO().print();
-            cli.start();
-            Outputs.create("CLI thread started").verbose().INFO().print();
-        }
-
-        Outputs.create("Uni-Messenger started").verbose().INFO().print();
+//        boolean guib = Inputs.getBoolAnswerFrom("Would you like to use a GUI?");
+//
+//        if(guib)
+//        {
+//            Outputs.create("GUI starting...").verbose().INFO().print();
+//            gui.start();
+//            Outputs.create("GUI started").verbose().INFO().print();
+//        } else
+//        {
+        Outputs.create("Starting CLI thread").verbose().INFO().print();
+        cli.start();
+        Outputs.create("CLI thread started").verbose().INFO().print();
+//        }
+//
     }
 }
