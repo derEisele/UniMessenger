@@ -1,6 +1,7 @@
 package unimessenger;
 
 import unimessenger.abstraction.storage.WireStorage;
+import unimessenger.communication.RequestHandler;
 import unimessenger.userinteraction.gui.MainWindow;
 import unimessenger.userinteraction.tui.CLI;
 import unimessenger.userinteraction.tui.Inputs;
@@ -20,6 +21,7 @@ public class Main
     public static Thread cli;
     public static Thread gui;
     public static Thread updt;
+    public static Thread http;
     public static Thread stp;
 
     public static void main(String[] args)
@@ -47,6 +49,8 @@ public class Main
         stp = new Thread(new Stop());
         Outputs.create("Updater").verbose().INFO().print();
         updt = new Thread(new Updater());
+        Outputs.create("HTTP Requests").verbose().INFO().print();
+        http = new Thread(RequestHandler.getInstance());
         Outputs.create("CLI").verbose().INFO().print();
         cli = new Thread(new CLI());
         Outputs.create("Threads created").verbose().INFO().print();
@@ -54,6 +58,10 @@ public class Main
         Outputs.create("Starting updater thread").verbose().INFO().print();
         updt.start();
         Outputs.create("Updater thread started").verbose().INFO().print();
+
+        Outputs.create("Starting HTTP request thread").verbose().INFO().print();
+        http.start();
+        Outputs.create("HTTP request thread started").verbose().INFO().print();
 
         Outputs.create("Creating new Thread for CLI...").verbose().INFO().print();
         cli = new Thread(new CLI());

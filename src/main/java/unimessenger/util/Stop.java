@@ -18,6 +18,10 @@ public class Stop implements Runnable
         Main.cli.interrupt();
         Outputs.create("CLI thread stopped").verbose().INFO().print();
 
+        Outputs.create("Stopping HTTP thread...").verbose().INFO().print();
+        Main.http.interrupt();
+        Outputs.create("HTTP thread stopped").verbose().INFO().print();
+
         Outputs.create("Stopping GUI thread...").verbose().INFO().print();
         Main.gui.stop();
         Outputs.create("GUI thread stopped").verbose().INFO().print();
